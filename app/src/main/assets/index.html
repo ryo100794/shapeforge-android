@@ -1216,6 +1216,27 @@ bolt_line(9);`
     return out;
   }
 
+  function evalForArgs(args, env, emit) {
+    const generators = args.filter(arg => arg.name);
+    if (!generators.length) return [];
+    const out = [];
+    const walk = (index, current) => {
+      if (index >= generators.length) {
+        out.push(...emit(current));
+        return;
+      }
+      const generator = generators[index];
+      const values = evalExpr(generator.expr, current);
+      for (const value of (Array.isArray(values) ? values : [values])) {
+        const local = cloneEnv(current);
+        local[generator.name] = value;
+        walk(index + 1, local);
+      }
+    };
+    walk(0, cloneEnv(env));
+    return out;
+  }
+
   function eval2DCall(node, env, modules, matrix, color) {
     const args = argMap(node.args, env);
     const get = (name, index, fallback) => args.named[name] !== undefined ? args.named[name] : args.pos[index] !== undefined ? args.pos[index] : fallback;
@@ -1230,18 +1251,8 @@ bolt_line(9);`
       return eval2DNodes(mod.body, local, modules, matrix, color);
     }
     switch (node.name) {
-      case "for": {
-        const first = node.args[0];
-        if (!first || !first.name) return [];
-        const values = evalExpr(first.expr, env);
-        const out = [];
-        for (const value of (Array.isArray(values) ? values : [values])) {
-          const local = cloneEnv(env);
-          local[first.name] = value;
-          out.push(...eval2DNodes(node.children, local, modules, matrix, color));
-        }
-        return out;
-      }
+      case "for":
+        return evalForArgs(node.args, env, local => eval2DNodes(node.children, local, modules, matrix, color));
       case "square":
         return [transformShape2(shapeSquare(get("size", 0, 1), !!get("center", 1, false), color), matrix)];
       case "circle": {
@@ -1327,18 +1338,8 @@ bolt_line(9);`
     }
 
     switch (node.name) {
-      case "for": {
-        const first = node.args[0];
-        if (!first || !first.name) return [];
-        const values = evalExpr(first.expr, env);
-        const out = [];
-        for (const value of (Array.isArray(values) ? values : [values])) {
-          const local = cloneEnv(env);
-          local[first.name] = value;
-          out.push(...evalNodes(node.children, local, modules, matrix, color));
-        }
-        return out;
-      }
+      case "for":
+        return evalForArgs(node.args, env, local => evalNodes(node.children, local, modules, matrix, color));
       case "echo":
       case "assert":
         return [];
