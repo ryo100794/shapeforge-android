@@ -69,7 +69,13 @@ def close_bounds(a, b, tolerance):
 def compare_file(scad, args, tmpdir):
     official_stl = tmpdir / (scad.stem + ".stl")
     official = run(["openscad", "-o", str(official_stl), str(scad)], args.timeout)
-    shape = run(["node", str(ROOT / "scripts/shape_eval.js"), str(scad)], args.timeout)
+    shape = run([
+        "node",
+        str(ROOT / "scripts/shape_eval.js"),
+        "--lib",
+        "/usr/share/openscad/libraries",
+        str(scad),
+    ], args.timeout)
     result = {"file": str(scad)}
     if official.returncode != 0:
         result["official_ok"] = False

@@ -3,8 +3,8 @@
     "corpus": "/usr/share/openscad/examples",
     "total": 48,
     "official_ok": 35,
-    "shape_ok": 19,
-    "match": 3
+    "shape_ok": 18,
+    "match": 4
   },
   "results": [
     {
@@ -82,19 +82,19 @@
         "meshes": 32,
         "bounds": {
           "min": [
-            -4.000000000000002,
-            -25.749125128001214,
-            -44
+            -44,
+            -44,
+            -4
           ],
           "max": [
             44,
-            25.749125128001207,
-            44
+            44,
+            4
           ]
         },
         "status": "Rendered"
       },
-      "match": false
+      "match": true
     },
     {
       "file": "/usr/share/openscad/examples/Advanced/children.scad",
@@ -147,7 +147,7 @@
     {
       "file": "/usr/share/openscad/examples/Advanced/module_recursion.scad",
       "official_ok": false,
-      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 8186\nGeometry cache size in bytes: 3158768\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.206\n   Top level object is a 2D object:\n   Contours:      576\nCurrent top level object is not a 3D object.",
+      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 8186\nGeometry cache size in bytes: 3158768\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.179\n   Top level object is a 2D object:\n   Contours:      576\nCurrent top level object is not a 3D object.",
       "shape": {
         "ok": true,
         "triangles": 0,
@@ -339,11 +339,8 @@
       "official_ok": false,
       "official_error": "ECHO: version = [2021, 1, 0]\nWARNING: Viewall and autocenter disabled in favor of $vp*",
       "shape": {
-        "ok": true,
-        "triangles": 0,
-        "meshes": 0,
-        "bounds": null,
-        "status": "Use reference: logo.scad; Unsupported: Logo; Unsupported: green"
+        "ok": false,
+        "error": "Unsupported boolean operation: difference"
       },
       "match": false
     },
@@ -490,7 +487,7 @@
     {
       "file": "/usr/share/openscad/examples/Functions/list_comprehensions.scad",
       "official_ok": false,
-      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 18\nGeometry cache size in bytes: 58720\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.002\n   Top level object is a 2D object:\n   Contours:        9\nCurrent top level object is not a 3D object.",
+      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 18\nGeometry cache size in bytes: 58720\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.004\n   Top level object is a 2D object:\n   Contours:        9\nCurrent top level object is not a 3D object.",
       "shape": {
         "ok": false,
         "error": "Expected ] near -1"
@@ -500,7 +497,7 @@
     {
       "file": "/usr/share/openscad/examples/Functions/polygon_areas.scad",
       "official_ok": false,
-      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 34\nGeometry cache size in bytes: 146688\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.072\n   Top level object is a 2D object:\n   Contours:       38\nCurrent top level object is not a 3D object.",
+      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 34\nGeometry cache size in bytes: 146688\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.183\n   Top level object is a 2D object:\n   Contours:       38\nCurrent top level object is not a 3D object.",
       "shape": {
         "ok": false,
         "error": "Expected ] near -1"
@@ -510,7 +507,7 @@
     {
       "file": "/usr/share/openscad/examples/Functions/recursion.scad",
       "official_ok": false,
-      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 2\nGeometry cache size in bytes: 9536\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.073\n   Top level object is a 2D object:\n   Contours:       10\nCurrent top level object is not a 3D object.",
+      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 2\nGeometry cache size in bytes: 9536\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.123\n   Top level object is a 2D object:\n   Contours:       10\nCurrent top level object is not a 3D object.",
       "shape": {
         "ok": true,
         "triangles": 0,
@@ -873,7 +870,7 @@
     {
       "file": "/usr/share/openscad/examples/Old/example015.scad",
       "official_ok": false,
-      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 17\nGeometry cache size in bytes: 11376\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.003\n   Top level object is a 2D object:\n   Contours:        8\nCurrent top level object is not a 3D object.",
+      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 17\nGeometry cache size in bytes: 11376\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.007\n   Top level object is a 2D object:\n   Contours:        8\nCurrent top level object is not a 3D object.",
       "shape": {
         "ok": false,
         "error": "Unsupported boolean operation: difference"
@@ -1096,7 +1093,7 @@
       },
       "shape": {
         "ok": false,
-        "error": "Expected ) near -1"
+        "error": "Expected ] near -1"
       },
       "match": false
     },

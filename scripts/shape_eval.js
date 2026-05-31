@@ -5,9 +5,173 @@ const fs = require("fs");
 const path = require("path");
 const vm = require("vm");
 
-if (process.argv.length < 3) {
-  console.error("usage: shape_eval.js FILE.scad");
+function parseArgs(argv) {
+  const libs = [];
+  let file = null;
+  for (let i = 2; i < argv.length; i++) {
+    const arg = argv[i];
+    if (arg === "--lib") {
+      if (i + 1 >= argv.length) throw new Error("--lib requires a path");
+      libs.push(argv[++i]);
+    } else if (arg.startsWith("--lib=")) {
+      libs.push(arg.slice("--lib=".length));
+    } else if (!file) {
+      file = arg;
+    } else {
+      throw new Error(`unexpected argument: ${arg}`);
+    }
+  }
+  return { file, libs };
+}
+
+let args;
+try {
+  args = parseArgs(process.argv);
+} catch (error) {
+  console.error(String(error && error.message || error));
   process.exit(2);
+}
+
+if (!args.file) {
+  console.error("usage: shape_eval.js [--lib PATH] FILE.scad");
+  process.exit(2);
+}
+
+const defaultLibDirs = [
+  "/usr/share/openscad/libraries",
+  "/usr/share/openscad/examples"
+];
+
+function existingDirs(dirs) {
+  return dirs
+    .map(dir => path.resolve(dir))
+    .filter((dir, index, all) => all.indexOf(dir) === index && fs.existsSync(dir));
+}
+
+function resolveScadPath(request, fromDir, libDirs) {
+  const candidates = [
+    path.resolve(fromDir, request),
+    ...libDirs.map(dir => path.resolve(dir, request))
+  ];
+  return candidates.find(candidate => fs.existsSync(candidate) && fs.statSync(candidate).isFile()) || null;
+}
+
+function maskCommentsAndStrings(source) {
+  const chars = source.split("");
+  let state = "code";
+  for (let i = 0; i < source.length; i++) {
+    const ch = source[i];
+    const next = source[i + 1];
+    if (state === "line") {
+      if (ch === "\n") state = "code";
+      else chars[i] = " ";
+    } else if (state === "block") {
+      chars[i] = " ";
+      if (ch === "*" && next === "/") {
+        chars[++i] = " ";
+        state = "code";
+      }
+    } else if (state === "string") {
+      chars[i] = ch === "\n" ? "\n" : " ";
+      if (ch === "\\") {
+        if (next !== undefined) chars[++i] = next === "\n" ? "\n" : " ";
+      } else if (ch === "\"") {
+        state = "code";
+      }
+    } else if (ch === "/" && next === "/") {
+      chars[i] = chars[++i] = " ";
+      state = "line";
+    } else if (ch === "/" && next === "*") {
+      chars[i] = chars[++i] = " ";
+      state = "block";
+    } else if (ch === "\"") {
+      chars[i] = " ";
+      state = "string";
+    }
+  }
+  return chars.join("");
+}
+
+function isWordBoundary(masked, index) {
+  return index < 0 || index >= masked.length || !/[A-Za-z0-9_$]/.test(masked[index]);
+}
+
+function findDefinitionEnd(masked, start) {
+  let parenDepth = 0;
+  let bracketDepth = 0;
+  for (let i = start; i < masked.length; i++) {
+    const ch = masked[i];
+    if (ch === "(") parenDepth++;
+    else if (ch === ")") parenDepth = Math.max(0, parenDepth - 1);
+    else if (ch === "[") bracketDepth++;
+    else if (ch === "]") bracketDepth = Math.max(0, bracketDepth - 1);
+    else if (ch === "{" && parenDepth === 0 && bracketDepth === 0) {
+      let braceDepth = 1;
+      for (let j = i + 1; j < masked.length; j++) {
+        if (masked[j] === "{") braceDepth++;
+        else if (masked[j] === "}") {
+          braceDepth--;
+          if (braceDepth === 0) return j + 1;
+        }
+      }
+      return masked.length;
+    } else if (ch === ";" && parenDepth === 0 && bracketDepth === 0) {
+      return i + 1;
+    }
+  }
+  return masked.length;
+}
+
+function topLevelDefinitions(source) {
+  const masked = maskCommentsAndStrings(source);
+  const definitions = [];
+  let braceDepth = 0;
+  let parenDepth = 0;
+  let bracketDepth = 0;
+  for (let i = 0; i < masked.length; i++) {
+    const ch = masked[i];
+    if (ch === "{") braceDepth++;
+    else if (ch === "}") braceDepth = Math.max(0, braceDepth - 1);
+    else if (ch === "(") parenDepth++;
+    else if (ch === ")") parenDepth = Math.max(0, parenDepth - 1);
+    else if (ch === "[") bracketDepth++;
+    else if (ch === "]") bracketDepth = Math.max(0, bracketDepth - 1);
+
+    if (braceDepth !== 0 || parenDepth !== 0 || bracketDepth !== 0) continue;
+    const keyword = masked.startsWith("module", i) ? "module" : masked.startsWith("function", i) ? "function" : null;
+    if (!keyword || !isWordBoundary(masked, i - 1) || !isWordBoundary(masked, i + keyword.length)) continue;
+
+    const end = findDefinitionEnd(masked, i);
+    definitions.push(source.slice(i, end));
+    i = end - 1;
+  }
+  return definitions.join("\n\n");
+}
+
+function preprocessScad(source, filePath, libDirs, seen = new Set()) {
+  const absolutePath = path.resolve(filePath);
+  if (seen.has(absolutePath)) return "";
+  seen.add(absolutePath);
+
+  const fromDir = path.dirname(absolutePath);
+  const lines = source.split(/(\r?\n)/);
+  for (let i = 0; i < lines.length; i += 2) {
+    const line = lines[i];
+    const match = line.match(/^(\s*)(include|use)\s*<([^>]+)>\s*;?\s*(\/\/.*)?$/);
+    if (!match) continue;
+    const [, indent, directive, request, comment = ""] = match;
+    const resolved = resolveScadPath(request.trim(), fromDir, libDirs);
+    if (!resolved) {
+      lines[i] = `${indent}// unresolved ${directive} <${request}>${comment ? ` ${comment}` : ""}`;
+      continue;
+    }
+    const includedSource = fs.readFileSync(resolved, "utf8");
+    const expanded = preprocessScad(includedSource, resolved, libDirs, seen);
+    const replacement = directive === "include" ? expanded : topLevelDefinitions(expanded);
+    lines[i] = `${indent}// expanded ${directive} <${request}> from ${resolved}\n${replacement}`;
+  }
+  seen.delete(absolutePath);
+  return lines.join("");
 }
 
 function element(id) {
@@ -101,8 +265,9 @@ context.globalThis = context;
 
 try {
   vm.runInNewContext(match[1] + capture, context, { filename: "index.html" });
-  const file = process.argv[2];
-  const source = fs.readFileSync(file, "utf8");
+  const file = path.resolve(args.file);
+  const libDirs = existingDirs([...args.libs, ...defaultLibDirs]);
+  const source = preprocessScad(fs.readFileSync(file, "utf8"), file, libDirs);
   context.__shapeForge.loadSource(path.basename(file), source);
   const status = context.__shapeForge.getStatus();
   const statusColor = context.__shapeForge.getStatusColor();

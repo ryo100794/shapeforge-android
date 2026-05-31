@@ -59,7 +59,7 @@ scripts/official_corpus_compare.py --corpus /usr/share/openscad/libraries
 
 Latest local results:
 
-- Official examples: 48 files, official rendered 35, ShapeForge rendered 19, exact model matches 3.
+- Official examples: 48 files, official rendered 35, ShapeForge rendered 18, exact model matches 4.
 - MCAD libraries: 38 files, official rendered 6, ShapeForge rendered 23, exact model matches 0.
 
 Reports are written to `docs/test/official-corpus-compat.json` and `docs/test/mcad-corpus-compat.json`.
