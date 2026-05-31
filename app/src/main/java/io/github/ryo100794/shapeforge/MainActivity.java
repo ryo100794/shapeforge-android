@@ -99,6 +99,19 @@ public class MainActivity extends Activity {
             toast(message == null ? "" : message);
         }
 
+        
+        @JavascriptInterface
+        public void openUrl(String url) {
+            runOnUiThread(() -> {
+                try {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    startActivity(intent);
+                } catch (Exception e) {
+                    toast("Cannot open link");
+                }
+            });
+        }
+
         private String sanitizeFileName(String value) {
             String name = value == null || value.trim().isEmpty() ? "model.stl" : value.trim();
             return name.replaceAll("[\\\\/:*?\"<>|]", "_");

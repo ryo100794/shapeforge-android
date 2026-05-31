@@ -1,0 +1,508 @@
+{
+  "summary": {
+    "corpus": "/usr/share/openscad/libraries",
+    "total": 38,
+    "official_ok": 6,
+    "shape_ok": 11,
+    "match": 0
+  },
+  "results": [
+    {
+      "file": "/usr/share/openscad/libraries/MCAD/2Dshapes.scad",
+      "official_ok": false,
+      "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
+      "shape": {
+        "ok": false,
+        "error": "Unexpected token near: && rads1[1] > 0)"
+      },
+      "match": false
+    },
+    {
+      "file": "/usr/share/openscad/libraries/MCAD/3d_triangle.scad",
+      "official_ok": false,
+      "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
+      "shape": {
+        "ok": false,
+        "error": "Expected ( near dtri_draw"
+      },
+      "match": false
+    },
+    {
+      "file": "/usr/share/openscad/libraries/MCAD/bearing.scad",
+      "official_ok": false,
+      "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
+      "shape": {
+        "ok": false,
+        "error": "Unexpected token near: .scad>\ninclude <"
+      },
+      "match": false
+    },
+    {
+      "file": "/usr/share/openscad/libraries/MCAD/bitmap/alphabet_block.scad",
+      "official_ok": true,
+      "official": {
+        "triangles": 108,
+        "bounds": {
+          "min": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max": [
+            20.0,
+            20.0,
+            20.0
+          ]
+        }
+      },
+      "shape": {
+        "ok": false,
+        "error": "Unexpected token near: .scad>\n\n\nletter "
+      },
+      "match": false
+    },
+    {
+      "file": "/usr/share/openscad/libraries/MCAD/bitmap/bitmap.scad",
+      "official_ok": false,
+      "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
+      "shape": {
+        "ok": false,
+        "error": "Unexpected token near: % row_size * blo"
+      },
+      "match": false
+    },
+    {
+      "file": "/usr/share/openscad/libraries/MCAD/bitmap/height_map.scad",
+      "official_ok": true,
+      "official": {
+        "triangles": 252,
+        "bounds": {
+          "min": [
+            -25.0,
+            -25.0,
+            0.0
+          ],
+          "max": [
+            25.0,
+            25.0,
+            15.0
+          ]
+        }
+      },
+      "shape": {
+        "ok": false,
+        "error": "Unexpected token near: .scad>\n\nblock_si"
+      },
+      "match": false
+    },
+    {
+      "file": "/usr/share/openscad/libraries/MCAD/bitmap/letter_necklace.scad",
+      "official_ok": true,
+      "official": {
+        "triangles": 1080,
+        "bounds": {
+          "min": [
+            -8.0,
+            -8.0,
+            -0.25
+          ],
+          "max": [
+            25.6,
+            78.4,
+            9.5
+          ]
+        }
+      },
+      "shape": {
+        "ok": false,
+        "error": "Unexpected token near: .scad>\n\n\n\nchars "
+      },
+      "match": false
+    },
+    {
+      "file": "/usr/share/openscad/libraries/MCAD/bitmap/name_tag.scad",
+      "official_ok": true,
+      "official": {
+        "triangles": 432,
+        "bounds": {
+          "min": [
+            -8.0,
+            -48.0,
+            0.0
+          ],
+          "max": [
+            8.0,
+            64.0,
+            6.0
+          ]
+        }
+      },
+      "shape": {
+        "ok": false,
+        "error": "Unexpected token near: .scad>\n\n\n\nchars "
+      },
+      "match": false
+    },
+    {
+      "file": "/usr/share/openscad/libraries/MCAD/boxes.scad",
+      "official_ok": false,
+      "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
+      "shape": {
+        "ok": false,
+        "error": "Unexpected token near: %3]/2, -radius+s"
+      },
+      "match": false
+    },
+    {
+      "file": "/usr/share/openscad/libraries/MCAD/constants.scad",
+      "official_ok": false,
+      "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
+      "shape": {
+        "ok": true,
+        "triangles": 0,
+        "meshes": 0,
+        "bounds": null,
+        "status": "Rendered"
+      },
+      "match": false
+    },
+    {
+      "file": "/usr/share/openscad/libraries/MCAD/curves.scad",
+      "official_ok": false,
+      "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
+      "shape": {
+        "ok": false,
+        "error": "Unexpected token near: .scad>\ninclude <"
+      },
+      "match": false
+    },
+    {
+      "file": "/usr/share/openscad/libraries/MCAD/fonts.scad",
+      "official_ok": false,
+      "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
+      "shape": {
+        "ok": false,
+        "error": "Unexpected token near: && resolution > "
+      },
+      "match": false
+    },
+    {
+      "file": "/usr/share/openscad/libraries/MCAD/gears.scad",
+      "official_ok": false,
+      "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
+      "shape": {
+        "ok": false,
+        "error": "Unexpected token near: && diametral_pit"
+      },
+      "match": false
+    },
+    {
+      "file": "/usr/share/openscad/libraries/MCAD/gridbeam.scad",
+      "official_ok": false,
+      "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
+      "shape": {
+        "ok": false,
+        "error": "Unexpected token near: .scad>\n\nbeam_wid"
+      },
+      "match": false
+    },
+    {
+      "file": "/usr/share/openscad/libraries/MCAD/hardware.scad",
+      "official_ok": true,
+      "official": {
+        "triangles": 2972,
+        "bounds": {
+          "min": [
+            -3.0,
+            -6.0,
+            -10.0
+          ],
+          "max": [
+            108.0,
+            6.0,
+            10.0
+          ]
+        }
+      },
+      "shape": {
+        "ok": false,
+        "error": "Unexpected token near: && renderrodthre"
+      },
+      "match": false
+    },
+    {
+      "file": "/usr/share/openscad/libraries/MCAD/involute_gears.scad",
+      "official_ok": false,
+      "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
+      "shape": {
+        "ok": false,
+        "error": "Unexpected token near: && diametral_pit"
+      },
+      "match": false
+    },
+    {
+      "file": "/usr/share/openscad/libraries/MCAD/layouts.scad",
+      "official_ok": false,
+      "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
+      "shape": {
+        "ok": false,
+        "error": "Unexpected token near: %limit) : (iWidt"
+      },
+      "match": false
+    },
+    {
+      "file": "/usr/share/openscad/libraries/MCAD/lego_compatibility.scad",
+      "official_ok": false,
+      "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
+      "shape": {
+        "ok": false,
+        "error": "Unexpected token near: && length>1) for"
+      },
+      "match": false
+    },
+    {
+      "file": "/usr/share/openscad/libraries/MCAD/libtriangles.scad",
+      "official_ok": false,
+      "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
+      "shape": {
+        "ok": true,
+        "triangles": 0,
+        "meshes": 0,
+        "bounds": null,
+        "status": "Rendered"
+      },
+      "match": false
+    },
+    {
+      "file": "/usr/share/openscad/libraries/MCAD/materials.scad",
+      "official_ok": false,
+      "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
+      "shape": {
+        "ok": true,
+        "triangles": 0,
+        "meshes": 0,
+        "bounds": null,
+        "status": "Rendered"
+      },
+      "match": false
+    },
+    {
+      "file": "/usr/share/openscad/libraries/MCAD/math.scad",
+      "official_ok": false,
+      "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
+      "shape": {
+        "ok": false,
+        "error": "Unexpected token near: .scad>\n\nfunction"
+      },
+      "match": false
+    },
+    {
+      "file": "/usr/share/openscad/libraries/MCAD/metric_fastners.scad",
+      "official_ok": false,
+      "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
+      "shape": {
+        "ok": true,
+        "triangles": 0,
+        "meshes": 0,
+        "bounds": null,
+        "status": "Rendered"
+      },
+      "match": false
+    },
+    {
+      "file": "/usr/share/openscad/libraries/MCAD/motors.scad",
+      "official_ok": false,
+      "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
+      "shape": {
+        "ok": false,
+        "error": "Unexpected token near: .scad>\n\n\n\nmodule"
+      },
+      "match": false
+    },
+    {
+      "file": "/usr/share/openscad/libraries/MCAD/multiply.scad",
+      "official_ok": false,
+      "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
+      "shape": {
+        "ok": false,
+        "error": "Unexpected token near: .scad>\n\nuse <uti"
+      },
+      "match": false
+    },
+    {
+      "file": "/usr/share/openscad/libraries/MCAD/nuts_and_bolts.scad",
+      "official_ok": false,
+      "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
+      "shape": {
+        "ok": true,
+        "triangles": 0,
+        "meshes": 0,
+        "bounds": null,
+        "status": "Rendered"
+      },
+      "match": false
+    },
+    {
+      "file": "/usr/share/openscad/libraries/MCAD/polyholes.scad",
+      "official_ok": false,
+      "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
+      "shape": {
+        "ok": true,
+        "triangles": 0,
+        "meshes": 0,
+        "bounds": null,
+        "status": "Rendered"
+      },
+      "match": false
+    },
+    {
+      "file": "/usr/share/openscad/libraries/MCAD/regular_shapes.scad",
+      "official_ok": false,
+      "official_error": "WARNING: Ignoring unknown module 'test_square_pyramid' in file regular_shapes.scad, line 260\nGeometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
+      "shape": {
+        "ok": false,
+        "error": "Bad control character in string literal in JSON at position 19"
+      },
+      "match": false
+    },
+    {
+      "file": "/usr/share/openscad/libraries/MCAD/screw.scad",
+      "official_ok": false,
+      "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
+      "shape": {
+        "ok": false,
+        "error": "Unexpected token near: .scad>\n\n\n\n\n\n\n\n\n\n"
+      },
+      "match": false
+    },
+    {
+      "file": "/usr/share/openscad/libraries/MCAD/servos.scad",
+      "official_ok": false,
+      "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
+      "shape": {
+        "ok": false,
+        "error": "Unexpected token near: .scad>\n\n\nmodule "
+      },
+      "match": false
+    },
+    {
+      "file": "/usr/share/openscad/libraries/MCAD/shapes.scad",
+      "official_ok": false,
+      "official_error": "ECHO: \"<font color='red'>           DEPRECATED: 'shapes' library is now deprecated           please use 'regular_shapes' instead</font>\"\nGeometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
+      "shape": {
+        "ok": false,
+        "error": "Bad control character in string literal in JSON at position 19"
+      },
+      "match": false
+    },
+    {
+      "file": "/usr/share/openscad/libraries/MCAD/stepper.scad",
+      "official_ok": false,
+      "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
+      "shape": {
+        "ok": false,
+        "error": "Unexpected token near: .scad>\ninclude <"
+      },
+      "match": false
+    },
+    {
+      "file": "/usr/share/openscad/libraries/MCAD/teardrop.scad",
+      "official_ok": false,
+      "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
+      "shape": {
+        "ok": true,
+        "triangles": 0,
+        "meshes": 0,
+        "bounds": null,
+        "status": "Rendered"
+      },
+      "match": false
+    },
+    {
+      "file": "/usr/share/openscad/libraries/MCAD/transformations.scad",
+      "official_ok": false,
+      "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
+      "shape": {
+        "ok": true,
+        "triangles": 0,
+        "meshes": 0,
+        "bounds": null,
+        "status": "Rendered"
+      },
+      "match": false
+    },
+    {
+      "file": "/usr/share/openscad/libraries/MCAD/triangles.scad",
+      "official_ok": false,
+      "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
+      "shape": {
+        "ok": true,
+        "triangles": 0,
+        "meshes": 0,
+        "bounds": null,
+        "status": "Rendered"
+      },
+      "match": false
+    },
+    {
+      "file": "/usr/share/openscad/libraries/MCAD/trochoids.scad",
+      "official_ok": true,
+      "official": {
+        "triangles": 1668,
+        "bounds": {
+          "min": [
+            -5.19615,
+            -5.19615,
+            -1.0
+          ],
+          "max": [
+            16.4,
+            18.0,
+            10.0
+          ]
+        }
+      },
+      "shape": {
+        "ok": false,
+        "error": "Unsupported boolean operation: difference"
+      },
+      "match": false
+    },
+    {
+      "file": "/usr/share/openscad/libraries/MCAD/units.scad",
+      "official_ok": false,
+      "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
+      "shape": {
+        "ok": true,
+        "triangles": 0,
+        "meshes": 0,
+        "bounds": null,
+        "status": "Rendered"
+      },
+      "match": false
+    },
+    {
+      "file": "/usr/share/openscad/libraries/MCAD/unregular_shapes.scad",
+      "official_ok": false,
+      "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
+      "shape": {
+        "ok": true,
+        "triangles": 0,
+        "meshes": 0,
+        "bounds": null,
+        "status": "Rendered"
+      },
+      "match": false
+    },
+    {
+      "file": "/usr/share/openscad/libraries/MCAD/utilities.scad",
+      "official_ok": false,
+      "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
+      "shape": {
+        "ok": false,
+        "error": "Unexpected token near: .scad>\n\nfunction"
+      },
+      "match": false
+    }
+  ]
+}

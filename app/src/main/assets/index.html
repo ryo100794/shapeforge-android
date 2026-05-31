@@ -350,6 +350,8 @@
         <button class="text-button primary" id="renderBtn" title="Render preview">実行</button>
         <button class="text-button" id="resetViewBtn" title="Reset view">視点</button>
         <button class="text-button" id="openBtn" title="Open .scad">開く</button>
+        <button class="text-button" id="officialCodeBtn" title="Official code reference">公式コード</button>
+        <button class="text-button" id="docsBtn" title="Original reference">参照</button>
         <button class="text-button" id="saveBtn" title="Save .scad">保存</button>
         <button class="text-button" id="exportBtn" title="Export STL">STL</button>
         <select id="exampleSelect" title="Samples">
@@ -450,13 +452,13 @@ bolt_line(9);`
 
   const i18n = {
     ja: {
-      both: "分割", editor: "編集", preview: "プレビュー", render: "実行", reset: "視点", open: "開く", save: "保存", sample: "サンプル",
-      bracket: "ブラケット", tower: "タワー", module: "モジュール", file: "ファイル", ready: "準備完了", unrendered: "未描画", rendered: "描画完了",
+      both: "分割", editor: "編集", preview: "プレビュー", render: "実行", reset: "視点", open: "開く", officialCode: "公式コード", docs: "公式Docs", save: "保存", sample: "サンプル",
+      bracket: "ブラケット", tower: "タワー", module: "モジュール", file: "ファイル", ready: "準備完了", unrendered: "未描画", rendered: "描画完了", 
       mesh: (m, t) => m + " 形状 / " + t + " 三角形", unsupportedBoolean: name => "未対応のブーリアン演算: " + name, unsupportedCall: name => "未対応: " + name
     },
     en: {
-      both: "Split", editor: "Edit", preview: "Preview", render: "Render", reset: "View", open: "Open", save: "Save", sample: "Samples",
-      bracket: "Bracket", tower: "Tower", module: "Module", file: "File", ready: "Ready", unrendered: "Not rendered", rendered: "Rendered",
+      both: "Split", editor: "Edit", preview: "Preview", render: "Render", reset: "View", open: "Open", officialCode: "Code Ref", docs: "Docs", save: "Save", sample: "Samples",
+      bracket: "Bracket", tower: "Tower", module: "Module", file: "File", ready: "Ready", unrendered: "Not rendered", rendered: "Rendered", 
       mesh: (m, t) => m + " shapes / " + t + " triangles", unsupportedBoolean: name => "Unsupported boolean operation: " + name, unsupportedCall: name => "Unsupported: " + name
     }
   };
@@ -480,6 +482,8 @@ bolt_line(9);`
     document.getElementById("renderBtn").textContent = tr("render");
     document.getElementById("resetViewBtn").textContent = tr("reset");
     document.getElementById("openBtn").textContent = tr("open");
+    document.getElementById("officialCodeBtn").textContent = tr("officialCode");
+    document.getElementById("docsBtn").textContent = tr("docs");
     document.getElementById("saveBtn").textContent = tr("save");
     exampleSelect.options[0].textContent = tr("sample");
     exampleSelect.options[1].textContent = tr("bracket");
@@ -517,6 +521,14 @@ bolt_line(9);`
     if (window.ShapeForge && ShapeForge.notify) {
       ShapeForge.notify(message);
     }
+  }
+
+  function openExternal(url) {
+    if (window.ShapeForge && ShapeForge.openUrl) {
+      ShapeForge.openUrl(url);
+      return;
+    }
+    window.open(url, "_blank");
   }
 
   function stripComments(input) {
@@ -901,6 +913,7 @@ bolt_line(9);`
     return mesh(source.tris.map(t => t.map(p => transformPoint(matrix, p))), color || source.color);
   }
 
+
   function buildScene(ast) {
     const env = { $fn: 32 };
     const modules = {};
@@ -1159,6 +1172,12 @@ bolt_line(9);`
     draw();
   });
   document.getElementById("openBtn").addEventListener("click", () => fileInput.click());
+  document.getElementById("officialCodeBtn").addEventListener("click", () => {
+    openExternal("https://openscad.org/cheatsheet/index.html");
+  });
+  document.getElementById("docsBtn").addEventListener("click", () => {
+    openExternal("https://openscad.org/documentation.html");
+  });
   document.getElementById("saveBtn").addEventListener("click", saveSource);
   document.getElementById("exportBtn").addEventListener("click", exportStl);
   exampleSelect.addEventListener("change", () => {
