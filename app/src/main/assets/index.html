@@ -1136,6 +1136,145 @@ bolt_line(9);`
     return mesh(source.tris.map(t => t.map(p => transformPoint(matrix, p))), color || source.color);
   }
 
+  function shape2(points, color) {
+    return { points, color: color || "#6fa8dc" };
+  }
+
+  function transformShape2(source, matrix, color) {
+    return shape2(source.points.map(p => transformPoint(matrix, [p[0], p[1], 0])), color || source.color);
+  }
+
+  function shapeSquare(size, center, color) {
+    const s = vec(size, 2, [1, 1]);
+    const x0 = center ? -s[0] / 2 : 0;
+    const y0 = center ? -s[1] / 2 : 0;
+    return shape2([[x0, y0], [x0 + s[0], y0], [x0 + s[0], y0 + s[1]], [x0, y0 + s[1]]], color);
+  }
+
+  function shapeCircle(r, segments, color) {
+    const points = [];
+    for (let i = 0; i < segments; i++) {
+      const a = i * Math.PI * 2 / segments;
+      points.push([Math.cos(a) * r, Math.sin(a) * r]);
+    }
+    return shape2(points, color);
+  }
+
+  function triangleArea2(a, b, c) {
+    const ux = b[0] - a[0], uy = b[1] - a[1], uz = b[2] - a[2];
+    const vx = c[0] - a[0], vy = c[1] - a[1], vz = c[2] - a[2];
+    const cx = uy * vz - uz * vy, cy = uz * vx - ux * vz, cz = ux * vy - uy * vx;
+    return cx * cx + cy * cy + cz * cz;
+  }
+
+  function pushTri(tris, a, b, c) {
+    if (triangleArea2(a, b, c) > 1e-18) tris.push(tri(a, b, c));
+  }
+
+  function meshLinearExtrude(shapes, height, center, scaleValue, twistDeg, slices, color) {
+    const tris = [];
+    const z0 = center ? -height / 2 : 0;
+    const layerCount = Math.max(1, Math.trunc(slices));
+    const scaleVec = vec(scaleValue, 2, [1, 1]);
+    const layerPoint = (p, layer) => {
+      const t = layer / layerCount;
+      const sx = 1 + (scaleVec[0] - 1) * t;
+      const sy = 1 + (scaleVec[1] - 1) * t;
+      const a = twistDeg * t * Math.PI / 180;
+      const x = p[0] * sx, y = p[1] * sy;
+      return [Math.cos(a) * x - Math.sin(a) * y, Math.sin(a) * x + Math.cos(a) * y, z0 + height * t];
+    };
+    for (const shape of shapes) {
+      const pts = shape.points || [];
+      if (pts.length < 3) continue;
+      const layers = [];
+      for (let layer = 0; layer <= layerCount; layer++) layers.push(pts.map(p => layerPoint(p, layer)));
+      addPolygonCap(tris, layers[0], true);
+      if (Math.abs(scaleVec[0]) > 1e-9 && Math.abs(scaleVec[1]) > 1e-9) addPolygonCap(tris, layers[layerCount], false);
+      for (let layer = 0; layer < layerCount; layer++) {
+        for (let i = 0; i < pts.length; i++) {
+          const j = (i + 1) % pts.length;
+          pushTri(tris, layers[layer][i], layers[layer][j], layers[layer + 1][j]);
+          pushTri(tris, layers[layer][i], layers[layer + 1][j], layers[layer + 1][i]);
+        }
+      }
+    }
+    return mesh(tris, color);
+  }
+
+  function eval2DNodes(nodes, env, modules, matrix, color) {
+    let out = [];
+    for (const node of nodes) {
+      if (!node) continue;
+      if (node.type === "assign") env[node.name] = evalExpr(node.expr, env);
+      else if (node.type === "module") modules[node.name] = node;
+      else if (node.type === "function") env.__functions[node.name] = node;
+      else if (node.type === "if") out = out.concat(eval2DNodes(evalExpr(node.cond, env) ? node.thenBody : node.elseBody, cloneEnv(env), modules, matrix, color));
+      else if (node.type === "call") out = out.concat(eval2DCall(node, env, modules, matrix, color));
+    }
+    return out;
+  }
+
+  function eval2DCall(node, env, modules, matrix, color) {
+    const args = argMap(node.args, env);
+    const get = (name, index, fallback) => args.named[name] !== undefined ? args.named[name] : args.pos[index] !== undefined ? args.pos[index] : fallback;
+    const childShapes = (m = matrix, c = color) => eval2DNodes(node.children, cloneEnv(env), modules, m, c);
+    if (modules[node.name]) {
+      const mod = modules[node.name];
+      const local = cloneEnv(env);
+      mod.params.forEach((p, i) => {
+        const passed = args.named[p.name] !== undefined ? args.named[p.name] : args.pos[i];
+        local[p.name] = passed !== undefined ? passed : evalExpr(p.def, env);
+      });
+      return eval2DNodes(mod.body, local, modules, matrix, color);
+    }
+    switch (node.name) {
+      case "for": {
+        const first = node.args[0];
+        if (!first || !first.name) return [];
+        const values = evalExpr(first.expr, env);
+        const out = [];
+        for (const value of (Array.isArray(values) ? values : [values])) {
+          const local = cloneEnv(env);
+          local[first.name] = value;
+          out.push(...eval2DNodes(node.children, local, modules, matrix, color));
+        }
+        return out;
+      }
+      case "square":
+        return [transformShape2(shapeSquare(get("size", 0, 1), !!get("center", 1, false), color), matrix)];
+      case "circle": {
+        const r = num(get("r", 0, get("d", -1, 2) / 2), 1);
+        return [transformShape2(shapeCircle(r, fragmentCount(r, env), color), matrix)];
+      }
+      case "polygon": {
+        const points = get("points", 0, []);
+        return Array.isArray(points) ? [transformShape2(shape2(points, color), matrix)] : [];
+      }
+      case "translate":
+        return childShapes(matMul(matrix, matTranslate(vec(get("v", 0, [0,0,0]), 3, [0,0,0]))));
+      case "rotate":
+        return childShapes(matMul(matrix, matRotate(vec(get("a", 0, [0,0,0]), 3, [0,0,0]))));
+      case "scale":
+        return childShapes(matMul(matrix, matScale(vec(get("v", 0, [1,1,1]), 3, [1,1,1]))));
+      case "mirror": {
+        const v = vec(get("v", 0, [1,0,0]), 3, [1,0,0]).map(x => x ? -1 : 1);
+        return childShapes(matMul(matrix, matScale(v)));
+      }
+      case "color":
+        return childShapes(matrix, colorValue(get("c", 0, color), color));
+      case "union":
+      case "group":
+        return childShapes();
+      case "echo":
+      case "assert":
+        return [];
+      default:
+        notices.push(tr("unsupportedCall", node.name));
+        return childShapes();
+    }
+  }
+
 
   function buildScene(ast) {
     const env = { $fn: 0, $fa: 12, $fs: 2, __functions: {} };
@@ -1238,6 +1377,21 @@ bolt_line(9);`
         }
         return [applyMatrixToMesh(mesh(tris, color), matrix)];
       }
+      case "linear_extrude": {
+        const height = num(get("height", 0, 1), 1);
+        const center = !!get("center", -1, false);
+        const twist = num(get("twist", -1, 0), 0);
+        const defaultSlices = Math.abs(twist) > 0 ? Math.max(1, Math.floor(Math.abs(twist) / 12) + 1) : 1;
+        const slices = Math.max(1, Math.trunc(num(get("slices", -1, defaultSlices), 1)));
+        const scaleValue = get("scale", -1, 1);
+        const shapes = eval2DNodes(node.children, cloneEnv(env), modules, matIdentity(), color);
+        return [applyMatrixToMesh(meshLinearExtrude(shapes, height, center, scaleValue, twist, slices, color), matrix)];
+      }
+      case "square":
+      case "circle":
+      case "polygon":
+        notices.push("2D shape requires extrusion: " + node.name);
+        return [];
       case "translate":
         return childMeshes(matMul(matrix, matTranslate(vec(get("v", 0, [0,0,0]), 3, [0,0,0]))));
       case "rotate":

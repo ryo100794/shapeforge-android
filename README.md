@@ -26,6 +26,7 @@ These links are references only. ShapeForge does not copy or embed upstream sour
 ## Current Surface
 
 - Primitives: `cube`, `sphere`, `cylinder`, `polyhedron`
+- 2D/extrusion: `square`, `circle`, `polygon`, `linear_extrude`
 - Transforms: `translate`, `rotate`, `scale`, `mirror`, `color`
 - Structure: `union`, `group`, user `module` and `function` definitions
 - Control flow: `for`, `if`, `assign`; `include`/`use` references are parsed as references
@@ -35,7 +36,7 @@ These links are references only. ShapeForge does not copy or embed upstream sour
 
 - Full Boolean CSG output for `difference` and `intersection`
 - List comprehensions and child-indexed module semantics
-- Built-ins such as `polygon`, `text`, `linear_extrude`, `rotate_extrude`, `hull`, `minkowski`, `offset`, `projection`, `surface`, `import`
+- Built-ins such as `text`, `rotate_extrude`, `hull`, `minkowski`, `offset`, `projection`, `surface`, `import`
 - Remaining `$fn` / `$fa` / `$fs` tessellation edge cases and numerical edge cases
 
 ## Build
@@ -58,7 +59,7 @@ scripts/official_corpus_compare.py --corpus /usr/share/openscad/libraries
 
 Latest local results:
 
-- Official examples: 48 files, official rendered 38, ShapeForge rendered 17, exact model matches 2.
+- Official examples: 48 files, official rendered 35, ShapeForge rendered 19, exact model matches 3.
 - MCAD libraries: 38 files, official rendered 6, ShapeForge rendered 23, exact model matches 0.
 
 Reports are written to `docs/test/official-corpus-compat.json` and `docs/test/mcad-corpus-compat.json`.
