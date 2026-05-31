@@ -1,0 +1,1232 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>ShapeForge</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #101318;
+      --panel: #181d23;
+      --panel-2: #20262e;
+      --line: #303945;
+      --text: #edf3f5;
+      --muted: #9ba7b2;
+      --accent: #2f8f83;
+      --warn: #c99835;
+      --bad: #d96b6b;
+      --mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+      --sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      overflow: hidden;
+    }
+
+    button, select, textarea {
+      font: inherit;
+    }
+
+    .app {
+      height: 100%;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      min-width: 0;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: max(8px, env(safe-area-inset-top)) 10px 8px;
+      background: #12161c;
+      border-bottom: 1px solid var(--line);
+      min-width: 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      margin-right: 4px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .mark {
+      width: 24px;
+      height: 24px;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      color: #d6fff7;
+      background: var(--accent);
+      clip-path: polygon(50% 4%, 92% 27%, 92% 73%, 50% 96%, 8% 73%, 8% 27%);
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .mode-tabs {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      padding: 2px;
+      border: 1px solid var(--line);
+      background: #0f1217;
+      border-radius: 6px;
+      flex: 0 0 auto;
+    }
+
+    .mode-tab {
+      height: 32px;
+      min-width: 76px;
+      padding: 0 10px;
+      border: 0;
+      border-radius: 4px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .mode-tab.active {
+      background: var(--accent);
+      color: #041c19;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .toolbar::-webkit-scrollbar { display: none; }
+
+    .icon-button, .text-button, select {
+      height: 36px;
+      border: 1px solid var(--line);
+      background: var(--panel-2);
+      color: var(--text);
+      border-radius: 6px;
+      display: inline-grid;
+      place-items: center;
+      flex: 0 0 auto;
+    }
+
+    .icon-button {
+      width: 38px;
+      padding: 0;
+      font-family: var(--mono);
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .text-button {
+      padding: 0 12px;
+      white-space: nowrap;
+      font-size: 14px;
+      font-weight: 650;
+    }
+
+    select {
+      padding: 0 26px 0 10px;
+      min-width: 116px;
+      max-width: 40vw;
+      font-size: 14px;
+    }
+
+    .text-button.primary {
+      border-color: #41a99a;
+      background: var(--accent);
+      color: #041c19;
+    }
+
+    .main {
+      min-height: 0;
+      display: grid;
+      grid-template-columns: minmax(280px, 42%) minmax(0, 1fr);
+    }
+
+    .main.mode-editor {
+      grid-template-columns: 1fr;
+    }
+
+    .main.mode-preview {
+      grid-template-columns: 1fr;
+    }
+
+    .main.mode-editor .viewer-pane,
+    .main.mode-preview .editor-pane {
+      display: none;
+    }
+
+    .editor-pane, .viewer-pane {
+      min-width: 0;
+      min-height: 0;
+    }
+
+    .editor-pane {
+      display: grid;
+      grid-template-rows: auto 1fr;
+      border-right: 1px solid var(--line);
+      background: var(--panel);
+    }
+
+    .filebar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .file-name {
+      min-width: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      font-family: var(--mono);
+      color: var(--text);
+    }
+
+    textarea {
+      width: 100%;
+      height: 100%;
+      resize: none;
+      border: 0;
+      outline: 0;
+      padding: 14px;
+      color: #f2f5f4;
+      background: #151a20;
+      font-family: var(--mono);
+      font-size: 14px;
+      line-height: 1.45;
+      tab-size: 2;
+      white-space: pre;
+      overflow: auto;
+    }
+
+    .viewer-pane {
+      position: relative;
+      background: #0f1217;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      touch-action: none;
+      background: #0f1217;
+    }
+
+    .hud {
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      pointer-events: none;
+      min-width: 0;
+    }
+
+    .pill {
+      min-width: 0;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(18, 22, 28, 0.86);
+      color: var(--muted);
+      border-radius: 6px;
+      padding: 7px 9px;
+      font-size: 12px;
+    }
+
+    .statusbar {
+      min-height: 34px;
+      padding: 8px 10px max(8px, env(safe-area-inset-bottom));
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-top: 1px solid var(--line);
+      background: #12161c;
+      color: var(--muted);
+      font-size: 12px;
+      min-width: 0;
+    }
+
+    .status-text {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .splitter {
+      display: none;
+    }
+
+    @media (max-width: 760px) {
+      .topbar {
+        flex-wrap: wrap;
+      }
+
+      .brand {
+        width: auto;
+        margin-right: auto;
+      }
+
+      .mode-tabs {
+        order: 2;
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .mode-tab {
+        min-width: 0;
+      }
+
+      .toolbar {
+        order: 3;
+        width: 100%;
+      }
+
+      .main {
+        grid-template-columns: 1fr;
+        grid-template-rows: minmax(42%, 52%) 1fr;
+      }
+
+      .main.mode-editor,
+      .main.mode-preview {
+        grid-template-rows: 1fr;
+      }
+
+      .editor-pane {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .text-button {
+        padding: 0 10px;
+      }
+
+      textarea {
+        font-size: 13px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand"><span class="mark">S</span><span>ShapeForge</span></div>
+      <div class="mode-tabs" aria-label="View mode">
+        <button class="mode-tab active" data-mode="both">分割</button>
+        <button class="mode-tab" data-mode="editor">編集</button>
+        <button class="mode-tab" data-mode="preview">プレビュー</button>
+      </div>
+      <div class="toolbar">
+        <button class="text-button primary" id="renderBtn" title="Render preview">実行</button>
+        <button class="text-button" id="resetViewBtn" title="Reset view">視点</button>
+        <button class="text-button" id="openBtn" title="Open .scad">開く</button>
+        <button class="text-button" id="saveBtn" title="Save .scad">保存</button>
+        <button class="text-button" id="exportBtn" title="Export STL">STL</button>
+        <select id="exampleSelect" title="Samples">
+          <option value="">サンプル</option>
+          <option value="bracket">ブラケット</option>
+          <option value="tower">タワー</option>
+          <option value="module">モジュール</option>
+        </select>
+        <select id="languageSelect" title="Language">
+          <option value="auto">Auto</option>
+          <option value="ja">日本語</option>
+          <option value="en">English</option>
+        </select>
+      </div>
+      <input id="fileInput" type="file" accept=".scad,text/plain" hidden>
+    </header>
+    <main class="main mode-both" id="main">
+      <section class="editor-pane">
+        <div class="filebar"><span id="fileLabel">ファイル</span><span class="file-name" id="fileName">untitled.scad</span></div>
+        <textarea id="editor" spellcheck="false" autocapitalize="off" autocomplete="off"></textarea>
+      </section>
+      <section class="viewer-pane">
+        <canvas id="view"></canvas>
+        <div class="hud">
+          <div class="pill" id="meshInfo">未描画</div>
+        </div>
+      </section>
+    </main>
+    <footer class="statusbar">
+      <div class="status-text" id="status">準備完了</div>
+    </footer>
+  </div>
+
+  <script>
+  "use strict";
+
+  const initialScad = `// CAD script sample
+$fn = 36;
+
+module post(x, y) {
+  translate([x, y, 6])
+    cylinder(h = 12, r = 4, center = true);
+}
+
+union() {
+  color("teal")
+    cube([46, 30, 4], center = true);
+
+  post(-15, -8);
+  post(15, -8);
+  post(-15, 8);
+  post(15, 8);
+
+  translate([0, 0, 16])
+    rotate([0, 0, 30])
+      cylinder(h = 8, r1 = 13, r2 = 7, center = true);
+}`;
+
+  const examples = {
+    bracket: initialScad,
+    tower: `$fn = 48;
+
+color("steelblue")
+cylinder(h = 38, r1 = 12, r2 = 8, center = true);
+
+translate([0, 0, 23])
+  color([0.9, 0.75, 0.2])
+    sphere(r = 9);
+
+translate([0, 0, -24])
+  cube([34, 34, 6], center = true);`,
+    module: `$fn = 28;
+
+module bolt_line(y) {
+  translate([-18, y, 4]) cylinder(h = 8, r = 4, center = true);
+  translate([0, y, 4]) cylinder(h = 8, r = 4, center = true);
+  translate([18, y, 4]) cylinder(h = 8, r = 4, center = true);
+}
+
+color([0.2, 0.55, 0.85])
+cube([54, 30, 6], center = true);
+
+bolt_line(-9);
+bolt_line(9);`
+  };
+
+  const main = document.getElementById("main");
+  const editor = document.getElementById("editor");
+  const canvas = document.getElementById("view");
+  const ctx = canvas.getContext("2d");
+  const statusEl = document.getElementById("status");
+  const meshInfoEl = document.getElementById("meshInfo");
+  const fileNameEl = document.getElementById("fileName");
+  const fileInput = document.getElementById("fileInput");
+  const exampleSelect = document.getElementById("exampleSelect");
+  const languageSelect = document.getElementById("languageSelect");
+  const fileLabel = document.getElementById("fileLabel");
+
+  const i18n = {
+    ja: {
+      both: "分割", editor: "編集", preview: "プレビュー", render: "実行", reset: "視点", open: "開く", save: "保存", sample: "サンプル",
+      bracket: "ブラケット", tower: "タワー", module: "モジュール", file: "ファイル", ready: "準備完了", unrendered: "未描画", rendered: "描画完了",
+      mesh: (m, t) => m + " 形状 / " + t + " 三角形", unsupportedBoolean: name => "未対応のブーリアン演算: " + name, unsupportedCall: name => "未対応: " + name
+    },
+    en: {
+      both: "Split", editor: "Edit", preview: "Preview", render: "Render", reset: "View", open: "Open", save: "Save", sample: "Samples",
+      bracket: "Bracket", tower: "Tower", module: "Module", file: "File", ready: "Ready", unrendered: "Not rendered", rendered: "Rendered",
+      mesh: (m, t) => m + " shapes / " + t + " triangles", unsupportedBoolean: name => "Unsupported boolean operation: " + name, unsupportedCall: name => "Unsupported: " + name
+    }
+  };
+  let lang = "en";
+
+  function chooseLanguage(value) {
+    const selected = value || "auto";
+    if (selected === "ja" || selected === "en") return selected;
+    return String(navigator.language || "").toLowerCase().startsWith("ja") ? "ja" : "en";
+  }
+
+  function tr(key, ...args) {
+    const value = (i18n[lang] && i18n[lang][key]) || i18n.en[key] || key;
+    return typeof value === "function" ? value(...args) : value;
+  }
+
+  function applyLanguage() {
+    document.querySelector('.mode-tab[data-mode="both"]').textContent = tr("both");
+    document.querySelector('.mode-tab[data-mode="editor"]').textContent = tr("editor");
+    document.querySelector('.mode-tab[data-mode="preview"]').textContent = tr("preview");
+    document.getElementById("renderBtn").textContent = tr("render");
+    document.getElementById("resetViewBtn").textContent = tr("reset");
+    document.getElementById("openBtn").textContent = tr("open");
+    document.getElementById("saveBtn").textContent = tr("save");
+    exampleSelect.options[0].textContent = tr("sample");
+    exampleSelect.options[1].textContent = tr("bracket");
+    exampleSelect.options[2].textContent = tr("tower");
+    exampleSelect.options[3].textContent = tr("module");
+    fileLabel.textContent = tr("file");
+    if (!meshes.length) meshInfoEl.textContent = tr("unrendered");
+    if (!statusEl.textContent || statusEl.textContent === "準備完了" || statusEl.textContent === "Ready") setStatus(tr("ready"));
+  }
+
+  let currentName = "untitled.scad";
+  let meshes = [];
+  let notices = [];
+  let view = { rx: -0.72, rz: 0.68, zoom: 1.0 };
+  let drag = null;
+  let activeMode = "both";
+
+  function setMode(mode) {
+    activeMode = mode || "both";
+    main.classList.remove("mode-both", "mode-editor", "mode-preview");
+    main.classList.add("mode-" + activeMode);
+    document.querySelectorAll(".mode-tab").forEach(btn => {
+      btn.classList.toggle("active", btn.dataset.mode === activeMode);
+    });
+    requestAnimationFrame(draw);
+  }
+
+
+  function setStatus(message, level) {
+    statusEl.textContent = message;
+    statusEl.style.color = level === "bad" ? "var(--bad)" : level === "warn" ? "var(--warn)" : "var(--muted)";
+  }
+
+  function notify(message) {
+    if (window.ShapeForge && ShapeForge.notify) {
+      ShapeForge.notify(message);
+    }
+  }
+
+  function stripComments(input) {
+    return input
+      .replace(/\/\*[\s\S]*?\*\//g, "")
+      .replace(/\/\/.*$/gm, "");
+  }
+
+  function tokenize(input) {
+    const source = stripComments(input);
+    const tokens = [];
+    const re = /\s+|([A-Za-z_$][A-Za-z0-9_$]*)|(-?(?:\d+\.\d+|\d+|\.\d+)(?:[eE][+-]?\d+)?)|("(?:\\.|[^"])*")|([{}\[\](),;=+\-*\/<>!?:])/gy;
+    let pos = 0;
+    while (pos < source.length) {
+      re.lastIndex = pos;
+      const m = re.exec(source);
+      if (!m) throw new Error("Unexpected token near: " + source.slice(pos, pos + 16));
+      pos = re.lastIndex;
+      if (m[0].trim() === "") continue;
+      if (m[1]) tokens.push({ type: "id", value: m[1] });
+      else if (m[2]) tokens.push({ type: "num", value: Number(m[2]) });
+      else if (m[3]) tokens.push({ type: "str", value: JSON.parse(m[3]) });
+      else tokens.push({ type: "sym", value: m[4] });
+    }
+    tokens.push({ type: "eof", value: "" });
+    return tokens;
+  }
+
+  class Parser {
+    constructor(tokens) {
+      this.tokens = tokens;
+      this.i = 0;
+    }
+
+    peek(value) {
+      const t = this.tokens[this.i];
+      return value === undefined ? t : t.value === value;
+    }
+
+    next() {
+      return this.tokens[this.i++];
+    }
+
+    match(value) {
+      if (this.peek(value)) {
+        this.i++;
+        return true;
+      }
+      return false;
+    }
+
+    expect(value) {
+      if (!this.match(value)) throw new Error("Expected " + value + " near " + this.peek().value);
+    }
+
+    parseProgram(stopValue) {
+      const body = [];
+      while (this.peek().type !== "eof" && (!stopValue || !this.peek(stopValue))) {
+        const stmt = this.parseStatement();
+        if (stmt) body.push(stmt);
+      }
+      return body;
+    }
+
+    parseStatement() {
+      while (this.match(";")) {}
+      let modifier = null;
+      if (["!", "#", "%", "*"].includes(this.peek().value)) modifier = this.next().value;
+      if (this.peek().type !== "id") {
+        this.next();
+        return null;
+      }
+      const id = this.next().value;
+      if (id === "module") return this.parseModule();
+      if (id === "function") {
+        while (!this.peek(";") && this.peek().type !== "eof") this.next();
+        this.match(";");
+        return null;
+      }
+      if (this.peek("=")) {
+        this.next();
+        const expr = this.parseExpression();
+        this.match(";");
+        return { type: "assign", name: id, expr };
+      }
+      const args = this.match("(") ? this.parseArgs() : [];
+      let children = [];
+      if (this.match("{")) {
+        children = this.parseProgram("}");
+        this.expect("}");
+      } else if (!this.match(";")) {
+        const child = this.parseStatement();
+        if (child) children = [child];
+      }
+      return { type: "call", name: id, args, children, modifier };
+    }
+
+    parseModule() {
+      const name = this.next().value;
+      this.expect("(");
+      const params = [];
+      while (!this.match(")") && this.peek().type !== "eof") {
+        const param = { name: this.next().value, def: null };
+        if (this.match("=")) param.def = this.parseExpression();
+        params.push(param);
+        this.match(",");
+      }
+      this.expect("{");
+      const body = this.parseProgram("}");
+      this.expect("}");
+      return { type: "module", name, params, body };
+    }
+
+    parseArgs() {
+      const args = [];
+      while (!this.match(")") && this.peek().type !== "eof") {
+        if (this.peek().type === "id" && this.tokens[this.i + 1] && this.tokens[this.i + 1].value === "=") {
+          const name = this.next().value;
+          this.expect("=");
+          args.push({ name, expr: this.parseExpression() });
+        } else {
+          args.push({ name: null, expr: this.parseExpression() });
+        }
+        this.match(",");
+      }
+      return args;
+    }
+
+    parseExpression() {
+      return this.parseAdd();
+    }
+
+    parseAdd() {
+      let node = this.parseMul();
+      while (this.peek("+") || this.peek("-")) {
+        const op = this.next().value;
+        node = { type: "binary", op, left: node, right: this.parseMul() };
+      }
+      return node;
+    }
+
+    parseMul() {
+      let node = this.parseUnary();
+      while (this.peek("*") || this.peek("/")) {
+        const op = this.next().value;
+        node = { type: "binary", op, left: node, right: this.parseUnary() };
+      }
+      return node;
+    }
+
+    parseUnary() {
+      if (this.match("-")) return { type: "unary", op: "-", value: this.parseUnary() };
+      if (this.match("+")) return this.parseUnary();
+      return this.parsePrimary();
+    }
+
+    parsePrimary() {
+      const t = this.next();
+      if (t.type === "num" || t.type === "str") return { type: t.type, value: t.value };
+      if (t.type === "id") {
+        if (this.match("(")) return { type: "fn", name: t.value, args: this.parseArgs() };
+        return { type: "var", name: t.value };
+      }
+      if (t.value === "[") {
+        const values = [];
+        while (!this.match("]") && this.peek().type !== "eof") {
+          values.push(this.parseExpression());
+          this.match(",");
+        }
+        return { type: "array", values };
+      }
+      if (t.value === "(") {
+        const value = this.parseExpression();
+        this.expect(")");
+        return value;
+      }
+      return { type: "num", value: 0 };
+    }
+  }
+
+  function cloneEnv(env) {
+    return Object.assign(Object.create(env), {});
+  }
+
+  function evalExpr(expr, env) {
+    if (!expr) return 0;
+    if (expr.type === "num" || expr.type === "str") return expr.value;
+    if (expr.type === "var") {
+      if (expr.name === "true") return true;
+      if (expr.name === "false") return false;
+      if (expr.name in env) return env[expr.name];
+      notices.push("Unknown variable: " + expr.name);
+      return 0;
+    }
+    if (expr.type === "array") return expr.values.map(v => evalExpr(v, env));
+    if (expr.type === "unary") return -num(evalExpr(expr.value, env));
+    if (expr.type === "binary") {
+      const a = evalExpr(expr.left, env);
+      const b = evalExpr(expr.right, env);
+      if (expr.op === "+") return Array.isArray(a) ? a.map((v, i) => num(v) + num(Array.isArray(b) ? b[i] : b)) : num(a) + num(b);
+      if (expr.op === "-") return Array.isArray(a) ? a.map((v, i) => num(v) - num(Array.isArray(b) ? b[i] : b)) : num(a) - num(b);
+      if (expr.op === "*") return Array.isArray(a) ? a.map(v => num(v) * num(b)) : num(a) * num(b);
+      if (expr.op === "/") return Array.isArray(a) ? a.map(v => num(v) / num(b)) : num(a) / num(b);
+    }
+    if (expr.type === "fn") {
+      const args = expr.args.map(a => evalExpr(a.expr, env));
+      const deg = x => num(x) * Math.PI / 180;
+      const table = {
+        sin: x => Math.sin(deg(x)),
+        cos: x => Math.cos(deg(x)),
+        tan: x => Math.tan(deg(x)),
+        asin: x => Math.asin(num(x)) * 180 / Math.PI,
+        acos: x => Math.acos(num(x)) * 180 / Math.PI,
+        atan: x => Math.atan(num(x)) * 180 / Math.PI,
+        sqrt: x => Math.sqrt(num(x)),
+        abs: x => Math.abs(num(x)),
+        floor: x => Math.floor(num(x)),
+        ceil: x => Math.ceil(num(x)),
+        round: x => Math.round(num(x)),
+        min: (...v) => Math.min(...v.map(num)),
+        max: (...v) => Math.max(...v.map(num))
+      };
+      if (table[expr.name]) return table[expr.name](...args);
+      notices.push("Unsupported function: " + expr.name);
+      return 0;
+    }
+    return 0;
+  }
+
+  function num(v, fallback = 0) {
+    const n = Number(v);
+    return Number.isFinite(n) ? n : fallback;
+  }
+
+  function vec(v, len, fallback) {
+    const base = Array.isArray(fallback) ? fallback.slice() : Array(len).fill(fallback);
+    if (Array.isArray(v)) {
+      for (let i = 0; i < len; i++) base[i] = num(v[i], base[i]);
+    } else if (v !== undefined) {
+      base.fill(num(v, base[0]));
+    }
+    return base;
+  }
+
+  function argMap(args, env) {
+    const pos = [];
+    const named = {};
+    args.forEach(a => {
+      const value = evalExpr(a.expr, env);
+      if (a.name) named[a.name] = value;
+      else pos.push(value);
+    });
+    return { pos, named };
+  }
+
+  function matIdentity() {
+    return [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
+  }
+
+  function matMul(a, b) {
+    const r = new Array(16).fill(0);
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
+        for (let k = 0; k < 4; k++) r[col + row * 4] += a[k + row * 4] * b[col + k * 4];
+      }
+    }
+    return r;
+  }
+
+  function matTranslate(v) {
+    const m = matIdentity();
+    m[3] = v[0]; m[7] = v[1]; m[11] = v[2];
+    return m;
+  }
+
+  function matScale(v) {
+    const m = matIdentity();
+    m[0] = v[0]; m[5] = v[1]; m[10] = v[2];
+    return m;
+  }
+
+  function matRotate(deg) {
+    const [x, y, z] = deg.map(d => d * Math.PI / 180);
+    const cx = Math.cos(x), sx = Math.sin(x);
+    const cy = Math.cos(y), sy = Math.sin(y);
+    const cz = Math.cos(z), sz = Math.sin(z);
+    const mx = [1,0,0,0, 0,cx,-sx,0, 0,sx,cx,0, 0,0,0,1];
+    const my = [cy,0,sy,0, 0,1,0,0, -sy,0,cy,0, 0,0,0,1];
+    const mz = [cz,-sz,0,0, sz,cz,0,0, 0,0,1,0, 0,0,0,1];
+    return matMul(mz, matMul(my, mx));
+  }
+
+  function transformPoint(m, p) {
+    return [
+      m[0] * p[0] + m[1] * p[1] + m[2] * p[2] + m[3],
+      m[4] * p[0] + m[5] * p[1] + m[6] * p[2] + m[7],
+      m[8] * p[0] + m[9] * p[1] + m[10] * p[2] + m[11]
+    ];
+  }
+
+  function colorValue(value, fallback) {
+    if (Array.isArray(value)) {
+      const c = value.map(v => Math.max(0, Math.min(255, Math.round(num(v) <= 1 ? num(v) * 255 : num(v)))));
+      return `rgb(${c[0] || 0},${c[1] || 0},${c[2] || 0})`;
+    }
+    const names = {
+      red: "#d96b6b", green: "#55b16f", blue: "#5e9ee8", teal: "#2f8f83",
+      orange: "#d39442", yellow: "#d8bd51", purple: "#8e77d9", gray: "#9ba7b2",
+      grey: "#9ba7b2", white: "#edf3f5", black: "#1a1d22", steelblue: "#5488ba"
+    };
+    return names[String(value).toLowerCase()] || fallback;
+  }
+
+  function mesh(tris, color) {
+    return { tris, color: color || "#6fa8dc" };
+  }
+
+  function tri(a, b, c) {
+    return [a, b, c];
+  }
+
+  function meshCube(size, center, color) {
+    const s = vec(size, 3, [1, 1, 1]);
+    const min = center ? [-s[0]/2, -s[1]/2, -s[2]/2] : [0, 0, 0];
+    const max = [min[0] + s[0], min[1] + s[1], min[2] + s[2]];
+    const p = [
+      [min[0],min[1],min[2]], [max[0],min[1],min[2]], [max[0],max[1],min[2]], [min[0],max[1],min[2]],
+      [min[0],min[1],max[2]], [max[0],min[1],max[2]], [max[0],max[1],max[2]], [min[0],max[1],max[2]]
+    ];
+    return mesh([
+      tri(p[0],p[2],p[1]), tri(p[0],p[3],p[2]),
+      tri(p[4],p[5],p[6]), tri(p[4],p[6],p[7]),
+      tri(p[0],p[1],p[5]), tri(p[0],p[5],p[4]),
+      tri(p[1],p[2],p[6]), tri(p[1],p[6],p[5]),
+      tri(p[2],p[3],p[7]), tri(p[2],p[7],p[6]),
+      tri(p[3],p[0],p[4]), tri(p[3],p[4],p[7])
+    ], color);
+  }
+
+  function meshCylinder(h, r1, r2, center, segments, color) {
+    const z0 = center ? -h / 2 : 0;
+    const z1 = z0 + h;
+    const tris = [];
+    const top = [0, 0, z1], bottom = [0, 0, z0];
+    for (let i = 0; i < segments; i++) {
+      const a0 = i * Math.PI * 2 / segments;
+      const a1 = (i + 1) * Math.PI * 2 / segments;
+      const b0 = [Math.cos(a0) * r1, Math.sin(a0) * r1, z0];
+      const b1 = [Math.cos(a1) * r1, Math.sin(a1) * r1, z0];
+      const t0 = [Math.cos(a0) * r2, Math.sin(a0) * r2, z1];
+      const t1 = [Math.cos(a1) * r2, Math.sin(a1) * r2, z1];
+      tris.push(tri(b0, b1, t1), tri(b0, t1, t0));
+      if (r2 > 0) tris.push(tri(top, t0, t1));
+      if (r1 > 0) tris.push(tri(bottom, b1, b0));
+    }
+    return mesh(tris, color);
+  }
+
+  function meshSphere(r, segments, color) {
+    const tris = [];
+    const rings = Math.max(6, Math.round(segments / 2));
+    for (let y = 0; y < rings; y++) {
+      const v0 = y / rings;
+      const v1 = (y + 1) / rings;
+      const p0 = Math.PI * v0;
+      const p1 = Math.PI * v1;
+      for (let x = 0; x < segments; x++) {
+        const u0 = x / segments;
+        const u1 = (x + 1) / segments;
+        const a0 = Math.PI * 2 * u0;
+        const a1 = Math.PI * 2 * u1;
+        const p = (phi, theta) => [Math.sin(phi) * Math.cos(theta) * r, Math.sin(phi) * Math.sin(theta) * r, Math.cos(phi) * r];
+        const a = p(p0, a0), b = p(p1, a0), c = p(p1, a1), d = p(p0, a1);
+        if (y > 0) tris.push(tri(a, b, d));
+        if (y < rings - 1) tris.push(tri(b, c, d));
+      }
+    }
+    return mesh(tris, color);
+  }
+
+  function applyMatrixToMesh(source, matrix, color) {
+    return mesh(source.tris.map(t => t.map(p => transformPoint(matrix, p))), color || source.color);
+  }
+
+  function buildScene(ast) {
+    const env = { $fn: 32 };
+    const modules = {};
+    notices = [];
+    const result = evalNodes(ast, env, modules, matIdentity(), "#6fa8dc");
+    return result;
+  }
+
+  function evalNodes(nodes, env, modules, matrix, color) {
+    let out = [];
+    for (const node of nodes) {
+      if (!node) continue;
+      if (node.type === "assign") {
+        env[node.name] = evalExpr(node.expr, env);
+      } else if (node.type === "module") {
+        modules[node.name] = node;
+      } else if (node.type === "call") {
+        out = out.concat(evalCall(node, env, modules, matrix, color));
+      }
+    }
+    return out;
+  }
+
+  function evalCall(node, env, modules, matrix, color) {
+    const args = argMap(node.args, env);
+    const get = (name, index, fallback) => args.named[name] !== undefined ? args.named[name] : args.pos[index] !== undefined ? args.pos[index] : fallback;
+    const childMeshes = (m = matrix, c = color) => evalNodes(node.children, cloneEnv(env), modules, m, c);
+    const seg = Math.max(8, Math.min(128, Math.round(num(get("$fn", -1, env.$fn), env.$fn))));
+
+    if (modules[node.name]) {
+      const mod = modules[node.name];
+      const local = cloneEnv(env);
+      mod.params.forEach((p, i) => {
+        const passed = args.named[p.name] !== undefined ? args.named[p.name] : args.pos[i];
+        local[p.name] = passed !== undefined ? passed : evalExpr(p.def, env);
+      });
+      return evalNodes(mod.body, local, modules, matrix, color);
+    }
+
+    switch (node.name) {
+      case "cube": {
+        const size = get("size", 0, 1);
+        const center = !!get("center", 1, false);
+        return [applyMatrixToMesh(meshCube(size, center, color), matrix)];
+      }
+      case "sphere": {
+        const r = get("r", 0, get("d", -1, 2) / 2);
+        return [applyMatrixToMesh(meshSphere(num(r, 1), seg, color), matrix)];
+      }
+      case "cylinder": {
+        const h = num(get("h", 0, 1), 1);
+        const r = get("r", 1, undefined);
+        const r1 = num(get("r1", -1, get("d1", -1, undefined) !== undefined ? get("d1", -1, 2) / 2 : r !== undefined ? r : 1), 1);
+        const r2 = num(get("r2", -1, get("d2", -1, undefined) !== undefined ? get("d2", -1, 2) / 2 : r !== undefined ? r : 1), 1);
+        const center = !!get("center", 2, false);
+        return [applyMatrixToMesh(meshCylinder(h, r1, r2, center, seg, color), matrix)];
+      }
+      case "translate":
+        return childMeshes(matMul(matrix, matTranslate(vec(get("v", 0, [0,0,0]), 3, [0,0,0]))));
+      case "rotate":
+        return childMeshes(matMul(matrix, matRotate(vec(get("a", 0, [0,0,0]), 3, [0,0,0]))));
+      case "scale":
+        return childMeshes(matMul(matrix, matScale(vec(get("v", 0, [1,1,1]), 3, [1,1,1]))));
+      case "mirror": {
+        const v = vec(get("v", 0, [1,0,0]), 3, [1,0,0]).map(x => x ? -1 : 1);
+        return childMeshes(matMul(matrix, matScale(v)));
+      }
+      case "color":
+        return childMeshes(matrix, colorValue(get("c", 0, color), color));
+      case "union":
+      case "group":
+        return childMeshes();
+      case "difference":
+      case "intersection":
+        throw new Error(tr("unsupportedBoolean", node.name));
+      default:
+        notices.push(tr("unsupportedCall", node.name));
+        return childMeshes();
+    }
+  }
+
+  function normal(t) {
+    const a = t[0], b = t[1], c = t[2];
+    const ux = b[0] - a[0], uy = b[1] - a[1], uz = b[2] - a[2];
+    const vx = c[0] - a[0], vy = c[1] - a[1], vz = c[2] - a[2];
+    const n = [uy * vz - uz * vy, uz * vx - ux * vz, ux * vy - uy * vx];
+    const l = Math.hypot(n[0], n[1], n[2]) || 1;
+    return [n[0] / l, n[1] / l, n[2] / l];
+  }
+
+  function rotateView(p) {
+    const crx = Math.cos(view.rx), srx = Math.sin(view.rx);
+    const crz = Math.cos(view.rz), srz = Math.sin(view.rz);
+    let x = p[0] * crz - p[1] * srz;
+    let y = p[0] * srz + p[1] * crz;
+    let z = p[2];
+    const y2 = y * crx - z * srx;
+    const z2 = y * srx + z * crx;
+    return [x, y2, z2];
+  }
+
+  function resizeCanvas() {
+    const rect = canvas.getBoundingClientRect();
+    const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+    const w = Math.max(1, Math.round(rect.width * dpr));
+    const h = Math.max(1, Math.round(rect.height * dpr));
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width = w;
+      canvas.height = h;
+    }
+  }
+
+  function sceneBounds() {
+    const pts = [];
+    meshes.forEach(m => m.tris.forEach(t => t.forEach(p => pts.push(p))));
+    if (!pts.length) return { center: [0,0,0], radius: 1 };
+    const min = [Infinity, Infinity, Infinity], max = [-Infinity, -Infinity, -Infinity];
+    pts.forEach(p => {
+      for (let i = 0; i < 3; i++) {
+        min[i] = Math.min(min[i], p[i]);
+        max[i] = Math.max(max[i], p[i]);
+      }
+    });
+    const center = [(min[0]+max[0])/2, (min[1]+max[1])/2, (min[2]+max[2])/2];
+    let radius = 1;
+    pts.forEach(p => radius = Math.max(radius, Math.hypot(p[0]-center[0], p[1]-center[1], p[2]-center[2])));
+    return { center, radius };
+  }
+
+  function draw() {
+    resizeCanvas();
+    const w = canvas.width, h = canvas.height;
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = "#0f1217";
+    ctx.fillRect(0, 0, w, h);
+    drawGrid(w, h);
+    if (!meshes.length) return;
+
+    const bounds = sceneBounds();
+    const scale = Math.min(w, h) * 0.42 * view.zoom / bounds.radius;
+    const tris = [];
+    meshes.forEach(m => {
+      m.tris.forEach(t => {
+        const rt = t.map(p => {
+          const q = rotateView([p[0]-bounds.center[0], p[1]-bounds.center[1], p[2]-bounds.center[2]]);
+          return { x: w/2 + q[0] * scale, y: h/2 - q[1] * scale, z: q[2] };
+        });
+        const nz = normal([[rt[0].x, rt[0].y, rt[0].z], [rt[1].x, rt[1].y, rt[1].z], [rt[2].x, rt[2].y, rt[2].z]])[2];
+        if (nz < -0.02) return;
+        tris.push({ p: rt, z: (rt[0].z + rt[1].z + rt[2].z) / 3, color: m.color, shade: 0.48 + Math.min(0.52, Math.max(0, nz)) });
+      });
+    });
+    tris.sort((a, b) => a.z - b.z);
+    tris.forEach(t => {
+      ctx.beginPath();
+      ctx.moveTo(t.p[0].x, t.p[0].y);
+      ctx.lineTo(t.p[1].x, t.p[1].y);
+      ctx.lineTo(t.p[2].x, t.p[2].y);
+      ctx.closePath();
+      ctx.fillStyle = shadeColor(t.color, t.shade);
+      ctx.fill();
+      ctx.strokeStyle = "rgba(255,255,255,0.08)";
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    });
+  }
+
+  function drawGrid(w, h) {
+    ctx.strokeStyle = "rgba(255,255,255,0.045)";
+    ctx.lineWidth = 1;
+    const step = Math.max(24, Math.round(Math.min(w, h) / 12));
+    for (let x = w / 2 % step; x < w; x += step) {
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+    }
+    for (let y = h / 2 % step; y < h; y += step) {
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+    }
+  }
+
+  function shadeColor(color, amount) {
+    const tmp = document.createElement("span");
+    tmp.style.color = color;
+    document.body.appendChild(tmp);
+    const rgb = getComputedStyle(tmp).color.match(/\d+/g).map(Number);
+    tmp.remove();
+    const c = rgb.slice(0, 3).map(v => Math.round(v * amount + 16 * (1 - amount)));
+    return `rgb(${c[0]},${c[1]},${c[2]})`;
+  }
+
+  function renderScad() {
+    try {
+      const ast = new Parser(tokenize(editor.value)).parseProgram();
+      meshes = buildScene(ast);
+      const tris = meshes.reduce((n, m) => n + m.tris.length, 0);
+      meshInfoEl.textContent = tr("mesh", meshes.length, tris);
+      setStatus(notices.length ? notices.slice(0, 3).join("; ") : tr("rendered"), notices.length ? "warn" : "");
+      draw();
+      localStorage.setItem("scad-source", editor.value);
+      localStorage.setItem("scad-name", currentName);
+    } catch (e) {
+      meshes = [];
+      meshInfoEl.textContent = tr("unrendered");
+      setStatus(e.message || String(e), "bad");
+      draw();
+    }
+  }
+
+  function exportStl() {
+    if (!meshes.length) renderScad();
+    if (!meshes.length) return;
+    const clean = currentName.replace(/\.scad$/i, "") || "model";
+    let stl = `solid ${clean}\n`;
+    meshes.forEach(m => m.tris.forEach(t => {
+      const n = normal(t);
+      stl += `  facet normal ${n[0]} ${n[1]} ${n[2]}\n    outer loop\n`;
+      t.forEach(p => stl += `      vertex ${p[0]} ${p[1]} ${p[2]}\n`);
+      stl += "    endloop\n  endfacet\n";
+    }));
+    stl += `endsolid ${clean}\n`;
+    saveText(clean + ".stl", "model/stl", stl);
+  }
+
+  function saveSource() {
+    saveText(currentName || "model.scad", "text/plain", editor.value);
+  }
+
+  function saveText(name, mime, content) {
+    if (window.ShapeForge && ShapeForge.saveFile) {
+      ShapeForge.saveFile(name, mime, content);
+      return;
+    }
+    const blob = new Blob([content], { type: mime });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  }
+
+  function loadSource(name, text) {
+    currentName = name || "untitled.scad";
+    fileNameEl.textContent = currentName;
+    editor.value = text;
+    renderScad();
+  }
+
+  document.querySelectorAll(".mode-tab").forEach(btn => {
+    btn.addEventListener("click", () => setMode(btn.dataset.mode));
+  });
+  document.getElementById("renderBtn").addEventListener("click", () => {
+    renderScad();
+    if (window.innerWidth <= 760) setMode("preview");
+  });
+  document.getElementById("resetViewBtn").addEventListener("click", () => {
+    view = { rx: -0.72, rz: 0.68, zoom: 1.0 };
+    draw();
+  });
+  document.getElementById("openBtn").addEventListener("click", () => fileInput.click());
+  document.getElementById("saveBtn").addEventListener("click", saveSource);
+  document.getElementById("exportBtn").addEventListener("click", exportStl);
+  exampleSelect.addEventListener("change", () => {
+    if (!exampleSelect.value) return;
+    loadSource(exampleSelect.value + ".scad", examples[exampleSelect.value]);
+    exampleSelect.value = "";
+  });
+  fileInput.addEventListener("change", () => {
+    const file = fileInput.files && fileInput.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => loadSource(file.name, String(reader.result || ""));
+    reader.readAsText(file);
+    fileInput.value = "";
+  });
+
+  editor.addEventListener("keydown", e => {
+    if (e.key === "Tab") {
+      e.preventDefault();
+      const start = editor.selectionStart;
+      const end = editor.selectionEnd;
+      editor.value = editor.value.slice(0, start) + "  " + editor.value.slice(end);
+      editor.selectionStart = editor.selectionEnd = start + 2;
+    }
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "r") {
+      e.preventDefault();
+      renderScad();
+    }
+  });
+
+  canvas.addEventListener("pointerdown", e => {
+    canvas.setPointerCapture(e.pointerId);
+    drag = { x: e.clientX, y: e.clientY };
+  });
+  canvas.addEventListener("pointermove", e => {
+    if (!drag) return;
+    const dx = e.clientX - drag.x;
+    const dy = e.clientY - drag.y;
+    drag = { x: e.clientX, y: e.clientY };
+    view.rz += dx * 0.008;
+    view.rx += dy * 0.008;
+    draw();
+  });
+  canvas.addEventListener("pointerup", () => { drag = null; });
+  canvas.addEventListener("pointercancel", () => { drag = null; });
+  canvas.addEventListener("wheel", e => {
+    e.preventDefault();
+    view.zoom = Math.max(0.2, Math.min(5, view.zoom * (e.deltaY > 0 ? 0.9 : 1.1)));
+    draw();
+  }, { passive: false });
+  window.addEventListener("resize", draw);
+
+  const storedLanguage = localStorage.getItem("language") || "auto";
+  languageSelect.value = storedLanguage;
+  lang = chooseLanguage(storedLanguage);
+  applyLanguage();
+  languageSelect.addEventListener("change", () => {
+    localStorage.setItem("language", languageSelect.value);
+    lang = chooseLanguage(languageSelect.value);
+    applyLanguage();
+    if (meshes.length) renderScad();
+  });
+
+  const stored = localStorage.getItem("scad-source");
+  const storedName = localStorage.getItem("scad-name");
+  const bootSource = stored && stored.trim() ? stored : initialScad;
+  loadSource(storedName || currentName, bootSource);
+  setInterval(draw, 1000);
+  </script>
+</body>
+</html>
