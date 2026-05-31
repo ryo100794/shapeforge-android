@@ -540,7 +540,7 @@ bolt_line(9);`
   function tokenize(input) {
     const source = stripComments(input);
     const tokens = [];
-    const re = /\s+|([A-Za-z_$][A-Za-z0-9_$]*)|(-?(?:\d+\.\d+|\d+|\.\d+)(?:[eE][+-]?\d+)?)|("(?:\\.|[^"])*")|([{}\[\](),;=+\-*\/<>!?:])/gy;
+    const re = /\s+|(<[^>\n]+>)|([A-Za-z_$][A-Za-z0-9_$]*)|(-?(?:\d+\.\d+|\d+|\.\d+)(?:[eE][+-]?\d+)?)|("(?:\\.|[^"])*")|(==|!=|<=|>=|&&|\|\|)|([{}\[\](),;=+\-*\/%<>!?:#\.])/gy;
     let pos = 0;
     while (pos < source.length) {
       re.lastIndex = pos;
@@ -548,10 +548,11 @@ bolt_line(9);`
       if (!m) throw new Error("Unexpected token near: " + source.slice(pos, pos + 16));
       pos = re.lastIndex;
       if (m[0].trim() === "") continue;
-      if (m[1]) tokens.push({ type: "id", value: m[1] });
-      else if (m[2]) tokens.push({ type: "num", value: Number(m[2]) });
-      else if (m[3]) tokens.push({ type: "str", value: JSON.parse(m[3]) });
-      else tokens.push({ type: "sym", value: m[4] });
+      if (m[1]) tokens.push({ type: "str", value: m[1].slice(1, -1) });
+      else if (m[2]) tokens.push({ type: "id", value: m[2] });
+      else if (m[3]) tokens.push({ type: "num", value: Number(m[3]) });
+      else if (m[4]) tokens.push({ type: "str", value: m[4].slice(1, -1).replace(/\\(.)/g, "$1") });
+      else tokens.push({ type: "sym", value: m[5] || m[6] });
     }
     tokens.push({ type: "eof", value: "" });
     return tokens;
@@ -603,11 +604,9 @@ bolt_line(9);`
       }
       const id = this.next().value;
       if (id === "module") return this.parseModule();
-      if (id === "function") {
-        while (!this.peek(";") && this.peek().type !== "eof") this.next();
-        this.match(";");
-        return null;
-      }
+      if (id === "function") return this.parseFunction();
+      if (id === "include" || id === "use") return this.parseDirective(id);
+      if (id === "if") return this.parseIf();
       if (this.peek("=")) {
         this.next();
         const expr = this.parseExpression();
@@ -636,10 +635,59 @@ bolt_line(9);`
         params.push(param);
         this.match(",");
       }
-      this.expect("{");
-      const body = this.parseProgram("}");
-      this.expect("}");
+      let body = [];
+      if (this.match("{")) {
+        body = this.parseProgram("}");
+        this.expect("}");
+      } else {
+        const child = this.parseStatement();
+        if (child) body = [child];
+      }
       return { type: "module", name, params, body };
+    }
+
+    parseDirective(name) {
+      const path = this.peek().type === "str" ? this.next().value : "";
+      this.match(";");
+      return { type: "directive", name, path };
+    }
+
+    parseIf() {
+      this.expect("(");
+      const cond = this.parseExpression();
+      this.expect(")");
+      const thenBody = this.parseBody();
+      const elseBody = this.peek().type === "id" && this.peek().value === "else" ? (this.next(), this.parseBody()) : [];
+      return { type: "if", cond, thenBody, elseBody };
+    }
+
+    parseBody() {
+      if (this.match("{")) {
+        const body = this.parseProgram("}");
+        this.expect("}");
+        return body;
+      }
+      const stmt = this.parseStatement();
+      return stmt ? [stmt] : [];
+    }
+
+    parseFunction() {
+      const name = this.next().value;
+      this.expect("(");
+      const params = [];
+      while (!this.match(")") && this.peek().type !== "eof") {
+        const param = { name: this.next().value, def: null };
+        if (this.match("=")) param.def = this.parseExpression();
+        params.push(param);
+        this.match(",");
+      }
+      this.expect("=");
+      let expr = this.parseExpression();
+      while (!this.peek(";") && this.peek().type !== "eof") {
+        expr = this.parseExpression();
+      }
+      this.match(";");
+      return { type: "function", name, params, expr };
     }
 
     parseArgs() {
@@ -658,7 +706,44 @@ bolt_line(9);`
     }
 
     parseExpression() {
-      return this.parseAdd();
+      return this.parseTernary();
+    }
+
+    parseTernary() {
+      let node = this.parseOr();
+      if (this.match("?")) {
+        const thenExpr = this.parseExpression();
+        this.expect(":");
+        node = { type: "ternary", cond: node, thenExpr, elseExpr: this.parseExpression() };
+      }
+      return node;
+    }
+
+    parseOr() {
+      let node = this.parseAnd();
+      while (this.peek("||")) {
+        const op = this.next().value;
+        node = { type: "binary", op, left: node, right: this.parseAnd() };
+      }
+      return node;
+    }
+
+    parseAnd() {
+      let node = this.parseCompare();
+      while (this.peek("&&")) {
+        const op = this.next().value;
+        node = { type: "binary", op, left: node, right: this.parseCompare() };
+      }
+      return node;
+    }
+
+    parseCompare() {
+      let node = this.parseAdd();
+      while (["==", "!=", "<", ">", "<=", ">="].includes(this.peek().value)) {
+        const op = this.next().value;
+        node = { type: "binary", op, left: node, right: this.parseAdd() };
+      }
+      return node;
     }
 
     parseAdd() {
@@ -670,16 +755,27 @@ bolt_line(9);`
       return node;
     }
 
-    parseMul() {
+    parseProperty() {
       let node = this.parseUnary();
-      while (this.peek("*") || this.peek("/")) {
+      while (this.match(".")) {
+        const prop = this.next().value;
+        const index = { x: 0, y: 1, z: 2 }[prop];
+        node = { type: "index", value: node, index: { type: "num", value: index === undefined ? 0 : index } };
+      }
+      return node;
+    }
+
+    parseMul() {
+      let node = this.parseProperty();
+      while (this.peek("*") || this.peek("/") || this.peek("%")) {
         const op = this.next().value;
-        node = { type: "binary", op, left: node, right: this.parseUnary() };
+        node = { type: "binary", op, left: node, right: this.parseProperty() };
       }
       return node;
     }
 
     parseUnary() {
+      if (this.match("!")) return { type: "unary", op: "!", value: this.parseUnary() };
       if (this.match("-")) return { type: "unary", op: "-", value: this.parseUnary() };
       if (this.match("+")) return this.parseUnary();
       return this.parsePrimary();
@@ -689,20 +785,56 @@ bolt_line(9);`
       const t = this.next();
       if (t.type === "num" || t.type === "str") return { type: t.type, value: t.value };
       if (t.type === "id") {
-        if (this.match("(")) return { type: "fn", name: t.value, args: this.parseArgs() };
-        return { type: "var", name: t.value };
+        let node = this.match("(") ? { type: "fn", name: t.value, args: this.parseArgs() } : { type: "var", name: t.value };
+        while (this.match("[")) {
+          const index = this.parseExpression();
+          this.expect("]");
+          node = { type: "index", value: node, index };
+        }
+        return node;
       }
       if (t.value === "[") {
-        const values = [];
-        while (!this.match("]") && this.peek().type !== "eof") {
-          values.push(this.parseExpression());
-          this.match(",");
+        const first = this.match("]") ? null : this.parseExpression();
+        if (first && this.match(":")) {
+          const second = this.parseExpression();
+          let step = { type: "num", value: 1 };
+          let end = second;
+          if (this.match(":")) {
+            step = second;
+            end = this.parseExpression();
+          }
+          this.expect("]");
+          let node = { type: "range", start: first, step, end };
+          while (this.match("[")) {
+            const index = this.parseExpression();
+            this.expect("]");
+            node = { type: "index", value: node, index };
+          }
+          return node;
         }
-        return { type: "array", values };
+        const values = [];
+        if (first) values.push(first);
+        while (!this.match("]") && this.peek().type !== "eof") {
+          this.match(",");
+          if (this.peek("]")) continue;
+          values.push(this.parseExpression());
+        }
+        let node = { type: "array", values };
+        while (this.match("[")) {
+          const index = this.parseExpression();
+          this.expect("]");
+          node = { type: "index", value: node, index };
+        }
+        return node;
       }
       if (t.value === "(") {
-        const value = this.parseExpression();
+        let value = this.parseExpression();
         this.expect(")");
+        while (this.match("[")) {
+          const index = this.parseExpression();
+          this.expect("]");
+          value = { type: "index", value, index };
+        }
         return value;
       }
       return { type: "num", value: 0 };
@@ -724,7 +856,28 @@ bolt_line(9);`
       return 0;
     }
     if (expr.type === "array") return expr.values.map(v => evalExpr(v, env));
-    if (expr.type === "unary") return -num(evalExpr(expr.value, env));
+    if (expr.type === "range") {
+      const start = num(evalExpr(expr.start, env));
+      const step = num(evalExpr(expr.step, env), 1);
+      const end = num(evalExpr(expr.end, env));
+      const out = [];
+      if (step === 0) return out;
+      for (let v = start, guard = 0; step > 0 ? v <= end + 1e-9 : v >= end - 1e-9; v += step, guard++) {
+        if (guard > 10000) break;
+        out.push(v);
+      }
+      return out;
+    }
+    if (expr.type === "index") {
+      const value = evalExpr(expr.value, env);
+      const index = Math.trunc(num(evalExpr(expr.index, env)));
+      return Array.isArray(value) || typeof value === "string" ? value[index] : 0;
+    }
+    if (expr.type === "ternary") return evalExpr(expr.cond, env) ? evalExpr(expr.thenExpr, env) : evalExpr(expr.elseExpr, env);
+    if (expr.type === "unary") {
+      const value = evalExpr(expr.value, env);
+      return expr.op === "!" ? !value : -num(value);
+    }
     if (expr.type === "binary") {
       const a = evalExpr(expr.left, env);
       const b = evalExpr(expr.right, env);
@@ -732,8 +885,39 @@ bolt_line(9);`
       if (expr.op === "-") return Array.isArray(a) ? a.map((v, i) => num(v) - num(Array.isArray(b) ? b[i] : b)) : num(a) - num(b);
       if (expr.op === "*") return Array.isArray(a) ? a.map(v => num(v) * num(b)) : num(a) * num(b);
       if (expr.op === "/") return Array.isArray(a) ? a.map(v => num(v) / num(b)) : num(a) / num(b);
+      if (expr.op === "%") return num(a) % num(b);
+      if (expr.op === "==") return JSON.stringify(a) === JSON.stringify(b);
+      if (expr.op === "!=") return JSON.stringify(a) !== JSON.stringify(b);
+      if (expr.op === "<") return num(a) < num(b);
+      if (expr.op === ">") return num(a) > num(b);
+      if (expr.op === "<=") return num(a) <= num(b);
+      if (expr.op === ">=") return num(a) >= num(b);
+      if (expr.op === "&&") return a && b;
+      if (expr.op === "||") return a || b;
     }
     if (expr.type === "fn") {
+      if (expr.name === "let") {
+        const local = cloneEnv(env);
+        for (let i = 0; i < expr.args.length - 1; i++) {
+          const arg = expr.args[i];
+          if (arg.name) local[arg.name] = evalExpr(arg.expr, local);
+        }
+        return expr.args.length ? evalExpr(expr.args[expr.args.length - 1].expr, local) : 0;
+      }
+      if (expr.name === "echo") {
+        return expr.args.length ? evalExpr(expr.args[expr.args.length - 1].expr, env) : 0;
+      }
+      if (env.__functions && env.__functions[expr.name]) {
+        const fn = env.__functions[expr.name];
+        const local = cloneEnv(env);
+        const positional = expr.args.filter(a => !a.name).map(a => evalExpr(a.expr, env));
+        const named = {};
+        expr.args.filter(a => a.name).forEach(a => { named[a.name] = evalExpr(a.expr, env); });
+        fn.params.forEach((p, i) => {
+          local[p.name] = named[p.name] !== undefined ? named[p.name] : positional[i] !== undefined ? positional[i] : evalExpr(p.def, local);
+        });
+        return evalExpr(fn.expr, local);
+      }
       const args = expr.args.map(a => evalExpr(a.expr, env));
       const deg = x => num(x) * Math.PI / 180;
       const table = {
@@ -744,18 +928,40 @@ bolt_line(9);`
         acos: x => Math.acos(num(x)) * 180 / Math.PI,
         atan: x => Math.atan(num(x)) * 180 / Math.PI,
         sqrt: x => Math.sqrt(num(x)),
+        pow: (x, y) => Math.pow(num(x), num(y)),
+        exp: x => Math.exp(num(x)),
+        log: x => Math.log(num(x)),
+        ln: x => Math.log(num(x)),
         abs: x => Math.abs(num(x)),
         floor: x => Math.floor(num(x)),
         ceil: x => Math.ceil(num(x)),
         round: x => Math.round(num(x)),
         min: (...v) => Math.min(...v.map(num)),
-        max: (...v) => Math.max(...v.map(num))
+        max: (...v) => Math.max(...v.map(num)),
+        len: v => Array.isArray(v) || typeof v === "string" ? v.length : 0,
+        lookup: (key, table) => lookupValue(num(key), table),
+        version: () => [2021, 1, 0]
       };
       if (table[expr.name]) return table[expr.name](...args);
       notices.push("Unsupported function: " + expr.name);
       return 0;
     }
     return 0;
+  }
+
+  function lookupValue(key, table) {
+    if (!Array.isArray(table) || !table.length) return 0;
+    const rows = table.filter(row => Array.isArray(row) && row.length >= 2).map(row => [num(row[0]), num(row[1])]).sort((a, b) => a[0] - b[0]);
+    if (!rows.length) return 0;
+    if (key <= rows[0][0]) return rows[0][1];
+    for (let i = 1; i < rows.length; i++) {
+      const a = rows[i - 1], b = rows[i];
+      if (key <= b[0]) {
+        const t = (key - a[0]) / (b[0] - a[0]);
+        return a[1] + (b[1] - a[1]) * t;
+      }
+    }
+    return rows[rows.length - 1][1];
   }
 
   function num(v, fallback = 0) {
@@ -868,44 +1074,61 @@ bolt_line(9);`
     ], color);
   }
 
+  function fragmentCount(radius, env) {
+    const fn = Math.floor(num(env.$fn, 0));
+    if (fn > 0) return Math.max(3, fn);
+    const fa = Math.max(0.01, num(env.$fa, 12));
+    const fs = Math.max(0.01, num(env.$fs, 2));
+    return Math.max(5, Math.ceil(Math.min(360 / fa, Math.abs(radius) * 2 * Math.PI / fs)));
+  }
+
+  function ringPoints(radius, z, segments) {
+    const points = [];
+    for (let i = 0; i < segments; i++) {
+      const a = i * Math.PI * 2 / segments;
+      points.push([Math.cos(a) * radius, Math.sin(a) * radius, z]);
+    }
+    return points;
+  }
+
+  function addPolygonCap(tris, points, reverse) {
+    if (points.length < 3) return;
+    for (let i = 1; i < points.length - 1; i++) {
+      tris.push(reverse ? tri(points[0], points[i + 1], points[i]) : tri(points[0], points[i], points[i + 1]));
+    }
+  }
+
   function meshCylinder(h, r1, r2, center, segments, color) {
     const z0 = center ? -h / 2 : 0;
     const z1 = z0 + h;
     const tris = [];
-    const top = [0, 0, z1], bottom = [0, 0, z0];
+    const bottom = ringPoints(r1, z0, segments);
+    const top = ringPoints(r2, z1, segments);
     for (let i = 0; i < segments; i++) {
-      const a0 = i * Math.PI * 2 / segments;
-      const a1 = (i + 1) * Math.PI * 2 / segments;
-      const b0 = [Math.cos(a0) * r1, Math.sin(a0) * r1, z0];
-      const b1 = [Math.cos(a1) * r1, Math.sin(a1) * r1, z0];
-      const t0 = [Math.cos(a0) * r2, Math.sin(a0) * r2, z1];
-      const t1 = [Math.cos(a1) * r2, Math.sin(a1) * r2, z1];
-      tris.push(tri(b0, b1, t1), tri(b0, t1, t0));
-      if (r2 > 0) tris.push(tri(top, t0, t1));
-      if (r1 > 0) tris.push(tri(bottom, b1, b0));
+      const j = (i + 1) % segments;
+      tris.push(tri(bottom[i], bottom[j], top[j]), tri(bottom[i], top[j], top[i]));
     }
+    if (r2 > 0) addPolygonCap(tris, top, false);
+    if (r1 > 0) addPolygonCap(tris, bottom, true);
     return mesh(tris, color);
   }
 
   function meshSphere(r, segments, color) {
     const tris = [];
-    const rings = Math.max(6, Math.round(segments / 2));
+    const rings = Math.max(2, Math.ceil(segments / 2));
+    const rows = [];
     for (let y = 0; y < rings; y++) {
-      const v0 = y / rings;
-      const v1 = (y + 1) / rings;
-      const p0 = Math.PI * v0;
-      const p1 = Math.PI * v1;
+      const phi = (y + 0.5) * Math.PI / rings;
+      rows.push(ringPoints(Math.sin(phi) * r, Math.cos(phi) * r, segments));
+    }
+    addPolygonCap(tris, rows[0], false);
+    for (let y = 0; y < rows.length - 1; y++) {
       for (let x = 0; x < segments; x++) {
-        const u0 = x / segments;
-        const u1 = (x + 1) / segments;
-        const a0 = Math.PI * 2 * u0;
-        const a1 = Math.PI * 2 * u1;
-        const p = (phi, theta) => [Math.sin(phi) * Math.cos(theta) * r, Math.sin(phi) * Math.sin(theta) * r, Math.cos(phi) * r];
-        const a = p(p0, a0), b = p(p1, a0), c = p(p1, a1), d = p(p0, a1);
-        if (y > 0) tris.push(tri(a, b, d));
-        if (y < rings - 1) tris.push(tri(b, c, d));
+        const j = (x + 1) % segments;
+        tris.push(tri(rows[y][x], rows[y + 1][x], rows[y + 1][j]), tri(rows[y][x], rows[y + 1][j], rows[y][j]));
       }
     }
+    addPolygonCap(tris, rows[rows.length - 1], true);
     return mesh(tris, color);
   }
 
@@ -915,7 +1138,7 @@ bolt_line(9);`
 
 
   function buildScene(ast) {
-    const env = { $fn: 32 };
+    const env = { $fn: 0, $fa: 12, $fs: 2, __functions: {} };
     const modules = {};
     notices = [];
     const result = evalNodes(ast, env, modules, matIdentity(), "#6fa8dc");
@@ -930,6 +1153,12 @@ bolt_line(9);`
         env[node.name] = evalExpr(node.expr, env);
       } else if (node.type === "module") {
         modules[node.name] = node;
+      } else if (node.type === "function") {
+        env.__functions[node.name] = node;
+      } else if (node.type === "if") {
+        out = out.concat(evalNodes(evalExpr(node.cond, env) ? node.thenBody : node.elseBody, cloneEnv(env), modules, matrix, color));
+      } else if (node.type === "directive") {
+        notices.push((node.name === "use" ? "Use" : "Include") + " reference: " + node.path);
       } else if (node.type === "call") {
         out = out.concat(evalCall(node, env, modules, matrix, color));
       }
@@ -941,7 +1170,11 @@ bolt_line(9);`
     const args = argMap(node.args, env);
     const get = (name, index, fallback) => args.named[name] !== undefined ? args.named[name] : args.pos[index] !== undefined ? args.pos[index] : fallback;
     const childMeshes = (m = matrix, c = color) => evalNodes(node.children, cloneEnv(env), modules, m, c);
-    const seg = Math.max(8, Math.min(128, Math.round(num(get("$fn", -1, env.$fn), env.$fn))));
+    const localFragments = radius => fragmentCount(radius, {
+      $fn: get("$fn", -1, env.$fn),
+      $fa: get("$fa", -1, env.$fa),
+      $fs: get("$fs", -1, env.$fs)
+    });
 
     if (modules[node.name]) {
       const mod = modules[node.name];
@@ -954,14 +1187,34 @@ bolt_line(9);`
     }
 
     switch (node.name) {
+      case "for": {
+        const first = node.args[0];
+        if (!first || !first.name) return [];
+        const values = evalExpr(first.expr, env);
+        const out = [];
+        for (const value of (Array.isArray(values) ? values : [values])) {
+          const local = cloneEnv(env);
+          local[first.name] = value;
+          out.push(...evalNodes(node.children, local, modules, matrix, color));
+        }
+        return out;
+      }
+      case "echo":
+      case "assert":
+        return [];
+      case "assign": {
+        const local = cloneEnv(env);
+        Object.keys(args.named).forEach(key => { local[key] = args.named[key]; });
+        return evalNodes(node.children, local, modules, matrix, color);
+      }
       case "cube": {
         const size = get("size", 0, 1);
         const center = !!get("center", 1, false);
         return [applyMatrixToMesh(meshCube(size, center, color), matrix)];
       }
       case "sphere": {
-        const r = get("r", 0, get("d", -1, 2) / 2);
-        return [applyMatrixToMesh(meshSphere(num(r, 1), seg, color), matrix)];
+        const r = num(get("r", 0, get("d", -1, 2) / 2), 1);
+        return [applyMatrixToMesh(meshSphere(r, localFragments(r), color), matrix)];
       }
       case "cylinder": {
         const h = num(get("h", 0, 1), 1);
@@ -969,7 +1222,21 @@ bolt_line(9);`
         const r1 = num(get("r1", -1, get("d1", -1, undefined) !== undefined ? get("d1", -1, 2) / 2 : r !== undefined ? r : 1), 1);
         const r2 = num(get("r2", -1, get("d2", -1, undefined) !== undefined ? get("d2", -1, 2) / 2 : r !== undefined ? r : 1), 1);
         const center = !!get("center", 2, false);
-        return [applyMatrixToMesh(meshCylinder(h, r1, r2, center, seg, color), matrix)];
+        return [applyMatrixToMesh(meshCylinder(h, r1, r2, center, localFragments(Math.max(r1, r2)), color), matrix)];
+      }
+      case "polyhedron": {
+        const points = get("points", 0, []);
+        const faces = get("faces", 1, get("triangles", -1, []));
+        const tris = [];
+        if (Array.isArray(points) && Array.isArray(faces)) {
+          for (const face of faces) {
+            if (!Array.isArray(face) || face.length < 3) continue;
+            for (let i = 1; i < face.length - 1; i++) {
+              tris.push(tri(points[Math.trunc(num(face[0]))], points[Math.trunc(num(face[i]))], points[Math.trunc(num(face[i + 1]))]));
+            }
+          }
+        }
+        return [applyMatrixToMesh(mesh(tris, color), matrix)];
       }
       case "translate":
         return childMeshes(matMul(matrix, matTranslate(vec(get("v", 0, [0,0,0]), 3, [0,0,0]))));

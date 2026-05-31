@@ -3,7 +3,7 @@
     "corpus": "/usr/share/openscad/libraries",
     "total": 38,
     "official_ok": 6,
-    "shape_ok": 11,
+    "shape_ok": 23,
     "match": 0
   },
   "results": [
@@ -12,8 +12,11 @@
       "official_ok": false,
       "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
       "shape": {
-        "ok": false,
-        "error": "Unexpected token near: && rads1[1] > 0)"
+        "ok": true,
+        "triangles": 0,
+        "meshes": 0,
+        "bounds": null,
+        "status": "Rendered"
       },
       "match": false
     },
@@ -23,7 +26,7 @@
       "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
       "shape": {
         "ok": false,
-        "error": "Expected ( near dtri_draw"
+        "error": "Expected ( near dtri_sides2coord"
       },
       "match": false
     },
@@ -32,8 +35,11 @@
       "official_ok": false,
       "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
       "shape": {
-        "ok": false,
-        "error": "Unexpected token near: .scad>\ninclude <"
+        "ok": true,
+        "triangles": 0,
+        "meshes": 0,
+        "bounds": null,
+        "status": "Include reference: units.scad; Include reference: materials.scad"
       },
       "match": false
     },
@@ -57,7 +63,7 @@
       },
       "shape": {
         "ok": false,
-        "error": "Unexpected token near: .scad>\n\n\nletter "
+        "error": "Unsupported boolean operation: difference"
       },
       "match": false
     },
@@ -67,7 +73,7 @@
       "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
       "shape": {
         "ok": false,
-        "error": "Unexpected token near: % row_size * blo"
+        "error": "Expected ( near bit_char"
       },
       "match": false
     },
@@ -90,8 +96,11 @@
         }
       },
       "shape": {
-        "ok": false,
-        "error": "Unexpected token near: .scad>\n\nblock_si"
+        "ok": true,
+        "triangles": 0,
+        "meshes": 0,
+        "bounds": null,
+        "status": "Use reference: bitmap.scad; Unsupported: bitmap"
       },
       "match": false
     },
@@ -115,7 +124,7 @@
       },
       "shape": {
         "ok": false,
-        "error": "Unexpected token near: .scad>\n\n\n\nchars "
+        "error": "Expected ( near bit_str"
       },
       "match": false
     },
@@ -139,7 +148,7 @@
       },
       "shape": {
         "ok": false,
-        "error": "Unexpected token near: .scad>\n\n\n\nchars "
+        "error": "Unsupported boolean operation: difference"
       },
       "match": false
     },
@@ -148,8 +157,11 @@
       "official_ok": false,
       "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
       "shape": {
-        "ok": false,
-        "error": "Unexpected token near: %3]/2, -radius+s"
+        "ok": true,
+        "triangles": 0,
+        "meshes": 0,
+        "bounds": null,
+        "status": "Rendered"
       },
       "match": false
     },
@@ -171,8 +183,11 @@
       "official_ok": false,
       "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
       "shape": {
-        "ok": false,
-        "error": "Unexpected token near: .scad>\ninclude <"
+        "ok": true,
+        "triangles": 0,
+        "meshes": 0,
+        "bounds": null,
+        "status": "Use reference: math.scad; Include reference: constants.scad"
       },
       "match": false
     },
@@ -182,7 +197,7 @@
       "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
       "shape": {
         "ok": false,
-        "error": "Unexpected token near: && resolution > "
+        "error": "Expected ] near -1"
       },
       "match": false
     },
@@ -191,8 +206,11 @@
       "official_ok": false,
       "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
       "shape": {
-        "ok": false,
-        "error": "Unexpected token near: && diametral_pit"
+        "ok": true,
+        "triangles": 0,
+        "meshes": 0,
+        "bounds": null,
+        "status": "Rendered"
       },
       "match": false
     },
@@ -201,8 +219,11 @@
       "official_ok": false,
       "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
       "shape": {
-        "ok": false,
-        "error": "Unexpected token near: .scad>\n\nbeam_wid"
+        "ok": true,
+        "triangles": 0,
+        "meshes": 0,
+        "bounds": null,
+        "status": "Include reference: units.scad; Unknown variable: inch; Unknown variable: inch"
       },
       "match": false
     },
@@ -226,7 +247,7 @@
       },
       "shape": {
         "ok": false,
-        "error": "Unexpected token near: && renderrodthre"
+        "error": "Unsupported boolean operation: difference"
       },
       "match": false
     },
@@ -236,7 +257,7 @@
       "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
       "shape": {
         "ok": false,
-        "error": "Unexpected token near: && diametral_pit"
+        "error": "Expected ) near -1"
       },
       "match": false
     },
@@ -246,7 +267,7 @@
       "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
       "shape": {
         "ok": false,
-        "error": "Unexpected token near: %limit) : (iWidt"
+        "error": "Expected ] near -1"
       },
       "match": false
     },
@@ -256,7 +277,7 @@
       "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
       "shape": {
         "ok": false,
-        "error": "Unexpected token near: && length>1) for"
+        "error": "Expected ) near -1"
       },
       "match": false
     },
@@ -291,8 +312,11 @@
       "official_ok": false,
       "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
       "shape": {
-        "ok": false,
-        "error": "Unexpected token near: .scad>\n\nfunction"
+        "ok": true,
+        "triangles": 0,
+        "meshes": 0,
+        "bounds": null,
+        "status": "Include reference: constants.scad"
       },
       "match": false
     },
@@ -315,7 +339,7 @@
       "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
       "shape": {
         "ok": false,
-        "error": "Unexpected token near: .scad>\n\n\n\nmodule"
+        "error": "Expected ) near -2"
       },
       "match": false
     },
@@ -325,7 +349,7 @@
       "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
       "shape": {
         "ok": false,
-        "error": "Unexpected token near: .scad>\n\nuse <uti"
+        "error": "Expected ] near -1"
       },
       "match": false
     },
@@ -361,7 +385,7 @@
       "official_error": "WARNING: Ignoring unknown module 'test_square_pyramid' in file regular_shapes.scad, line 260\nGeometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
       "shape": {
         "ok": false,
-        "error": "Bad control character in string literal in JSON at position 19"
+        "error": "Expected ] near -1"
       },
       "match": false
     },
@@ -370,8 +394,11 @@
       "official_ok": false,
       "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
       "shape": {
-        "ok": false,
-        "error": "Unexpected token near: .scad>\n\n\n\n\n\n\n\n\n\n"
+        "ok": true,
+        "triangles": 0,
+        "meshes": 0,
+        "bounds": null,
+        "status": "Include reference: curves.scad"
       },
       "match": false
     },
@@ -380,8 +407,11 @@
       "official_ok": false,
       "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
       "shape": {
-        "ok": false,
-        "error": "Unexpected token near: .scad>\n\n\nmodule "
+        "ok": true,
+        "triangles": 0,
+        "meshes": 0,
+        "bounds": null,
+        "status": "Use reference: triangles.scad"
       },
       "match": false
     },
@@ -391,7 +421,7 @@
       "official_error": "ECHO: \"<font color='red'>           DEPRECATED: 'shapes' library is now deprecated           please use 'regular_shapes' instead</font>\"\nGeometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
       "shape": {
         "ok": false,
-        "error": "Bad control character in string literal in JSON at position 19"
+        "error": "Expected ( near ptStar"
       },
       "match": false
     },
@@ -400,8 +430,11 @@
       "official_ok": false,
       "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
       "shape": {
-        "ok": false,
-        "error": "Unexpected token near: .scad>\ninclude <"
+        "ok": true,
+        "triangles": 0,
+        "meshes": 0,
+        "bounds": null,
+        "status": "Include reference: units.scad; Include reference: materials.scad; Unknown variable: mm"
       },
       "match": false
     },
@@ -464,7 +497,7 @@
       },
       "shape": {
         "ok": false,
-        "error": "Unsupported boolean operation: difference"
+        "error": "Expected ] near -1"
       },
       "match": false
     },
@@ -499,8 +532,11 @@
       "official_ok": false,
       "official_error": "Geometries in cache: 1\nGeometry cache size in bytes: 0\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.000\nCurrent top level object is empty.",
       "shape": {
-        "ok": false,
-        "error": "Unexpected token near: .scad>\n\nfunction"
+        "ok": true,
+        "triangles": 0,
+        "meshes": 0,
+        "bounds": null,
+        "status": "Include reference: units.scad"
       },
       "match": false
     }

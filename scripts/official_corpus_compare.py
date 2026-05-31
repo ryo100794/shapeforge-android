@@ -13,7 +13,14 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def run(cmd, timeout):
-    return subprocess.run(cmd, text=True, capture_output=True, timeout=timeout)
+    try:
+        return subprocess.run(cmd, text=True, capture_output=True, timeout=timeout)
+    except subprocess.TimeoutExpired as exc:
+        class TimeoutResult:
+            returncode = 124
+            stdout = exc.stdout.decode("utf-8", errors="ignore") if isinstance(exc.stdout, bytes) else (exc.stdout or "")
+            stderr = exc.stderr.decode("utf-8", errors="ignore") if isinstance(exc.stderr, bytes) else (exc.stderr or "")
+        return TimeoutResult()
 
 
 def stl_stats(path):

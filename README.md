@@ -25,18 +25,18 @@ These links are references only. ShapeForge does not copy or embed upstream sour
 
 ## Current Surface
 
-- Primitives: `cube`, `sphere`, `cylinder`
+- Primitives: `cube`, `sphere`, `cylinder`, `polyhedron`
 - Transforms: `translate`, `rotate`, `scale`, `mirror`, `color`
-- Structure: `union`, `group`, user `module` definitions
-- Basic variables, named arguments, arrays, arithmetic, and common math functions
+- Structure: `union`, `group`, user `module` and `function` definitions
+- Control flow: `for`, `if`, `assign`; `include`/`use` references are parsed as references
+- Basic variables, named arguments, arrays/ranges/indexing, arithmetic, comparisons, ternaries, vector `.x/.y/.z`, and common math functions
 
 ## Known Gaps Toward Full Compatibility
 
-- Boolean CSG: `difference`, `intersection`
-- Control flow: `for`, `if`, `let`, `assign`, list comprehensions
-- User-defined `function` evaluation
-- Built-ins such as `polygon`, `polyhedron`, `text`, `hull`, `minkowski`, `offset`, `projection`, `surface`, `import`
-- Exact `$fn` / `$fa` / `$fs` tessellation behavior and numerical edge cases
+- Full Boolean CSG output for `difference` and `intersection`
+- List comprehensions and child-indexed module semantics
+- Built-ins such as `polygon`, `text`, `linear_extrude`, `rotate_extrude`, `hull`, `minkowski`, `offset`, `projection`, `surface`, `import`
+- Remaining `$fn` / `$fa` / `$fs` tessellation edge cases and numerical edge cases
 
 ## Build
 
@@ -58,7 +58,7 @@ scripts/official_corpus_compare.py --corpus /usr/share/openscad/libraries
 
 Latest local results:
 
-- Official examples: 48 files, official rendered 42, ShapeForge rendered 11, exact model matches 0.
-- MCAD libraries: 38 files, official rendered 6, ShapeForge rendered 11, exact model matches 0.
+- Official examples: 48 files, official rendered 38, ShapeForge rendered 17, exact model matches 2.
+- MCAD libraries: 38 files, official rendered 6, ShapeForge rendered 23, exact model matches 0.
 
 Reports are written to `docs/test/official-corpus-compat.json` and `docs/test/mcad-corpus-compat.json`.
