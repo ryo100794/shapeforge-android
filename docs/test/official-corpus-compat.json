@@ -3,7 +3,7 @@
     "corpus": "/usr/share/openscad/examples",
     "total": 48,
     "official_ok": 35,
-    "shape_ok": 18,
+    "shape_ok": 21,
     "match": 4
   },
   "results": [
@@ -99,7 +99,7 @@
     {
       "file": "/usr/share/openscad/examples/Advanced/children.scad",
       "official_ok": false,
-      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 23\nGeometry cache size in bytes: 266176\nCGAL Polyhedrons in cache: 41\nCGAL cache size in bytes: 42529216\nTotal rendering time: 0:00:08.890\n   Top level object is a 3D object:\n   Simple:        yes\n   Vertices:     4808\n   Halfedges:   17520\n   Edges:        8760\n   Halffacets:   7936\n   Facets:       3968\n   Volumes:        23",
+      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 23\nGeometry cache size in bytes: 266176\nCGAL Polyhedrons in cache: 41\nCGAL cache size in bytes: 42529216\nTotal rendering time: 0:00:08.901\n   Top level object is a 3D object:\n   Simple:        yes\n   Vertices:     4808\n   Halfedges:   17520\n   Edges:        8760\n   Halffacets:   7936\n   Facets:       3968\n   Volumes:        23",
       "shape": {
         "ok": false,
         "error": "Unsupported boolean operation: difference"
@@ -147,7 +147,7 @@
     {
       "file": "/usr/share/openscad/examples/Advanced/module_recursion.scad",
       "official_ok": false,
-      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 8186\nGeometry cache size in bytes: 3158768\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.170\n   Top level object is a 2D object:\n   Contours:      576\nCurrent top level object is not a 3D object.",
+      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 8186\nGeometry cache size in bytes: 3158768\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.278\n   Top level object is a 2D object:\n   Contours:      576\nCurrent top level object is not a 3D object.",
       "shape": {
         "ok": true,
         "triangles": 0,
@@ -489,25 +489,31 @@
       "official_ok": false,
       "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 18\nGeometry cache size in bytes: 58720\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.002\n   Top level object is a 2D object:\n   Contours:        9\nCurrent top level object is not a 3D object.",
       "shape": {
-        "ok": false,
-        "error": "Expected ] near -1"
+        "ok": true,
+        "triangles": 0,
+        "meshes": 0,
+        "bounds": null,
+        "status": "2D shape requires extrusion: polygon; 2D shape requires extrusion: polygon; 2D shape requires extrusion: polygon"
       },
       "match": false
     },
     {
       "file": "/usr/share/openscad/examples/Functions/polygon_areas.scad",
       "official_ok": false,
-      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 34\nGeometry cache size in bytes: 146688\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.083\n   Top level object is a 2D object:\n   Contours:       38\nCurrent top level object is not a 3D object.",
+      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 34\nGeometry cache size in bytes: 146688\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.091\n   Top level object is a 2D object:\n   Contours:       38\nCurrent top level object is not a 3D object.",
       "shape": {
-        "ok": false,
-        "error": "Expected ] near -1"
+        "ok": true,
+        "triangles": 0,
+        "meshes": 0,
+        "bounds": null,
+        "status": "Unsupported: text; Unsupported: shapeWithArea; Unsupported: shapeWithArea"
       },
       "match": false
     },
     {
       "file": "/usr/share/openscad/examples/Functions/recursion.scad",
       "official_ok": false,
-      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 2\nGeometry cache size in bytes: 9536\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.108\n   Top level object is a 2D object:\n   Contours:       10\nCurrent top level object is not a 3D object.",
+      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 2\nGeometry cache size in bytes: 9536\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.081\n   Top level object is a 2D object:\n   Contours:       10\nCurrent top level object is not a 3D object.",
       "shape": {
         "ok": true,
         "triangles": 0,
@@ -870,7 +876,7 @@
     {
       "file": "/usr/share/openscad/examples/Old/example015.scad",
       "official_ok": false,
-      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 17\nGeometry cache size in bytes: 11376\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.007\n   Top level object is a 2D object:\n   Contours:        8\nCurrent top level object is not a 3D object.",
+      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 17\nGeometry cache size in bytes: 11376\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.003\n   Top level object is a 2D object:\n   Contours:        8\nCurrent top level object is not a 3D object.",
       "shape": {
         "ok": false,
         "error": "Unsupported boolean operation: difference"
@@ -944,8 +950,11 @@
         }
       },
       "shape": {
-        "ok": false,
-        "error": "Expected ] near -1"
+        "ok": true,
+        "triangles": 0,
+        "meshes": 0,
+        "bounds": null,
+        "status": "Unknown variable: $children; Unknown variable: $children; Unknown variable: $children"
       },
       "match": false
     },
@@ -1007,7 +1016,7 @@
       },
       "shape": {
         "ok": false,
-        "error": "Expected ] near -1"
+        "error": "Unsupported boolean operation: difference"
       },
       "match": false
     },
@@ -1093,7 +1102,7 @@
       },
       "shape": {
         "ok": false,
-        "error": "Expected ] near -1"
+        "error": "Expected ( near bit_polyfont"
       },
       "match": false
     },

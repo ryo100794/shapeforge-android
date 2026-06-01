@@ -540,7 +540,7 @@ bolt_line(9);`
   function tokenize(input) {
     const source = stripComments(input);
     const tokens = [];
-    const re = /\s+|(<[^>\n]+>)|([A-Za-z_$][A-Za-z0-9_$]*)|(-?(?:\d+\.\d+|\d+|\.\d+)(?:[eE][+-]?\d+)?)|("(?:\\.|[^"])*")|(==|!=|<=|>=|&&|\|\|)|([{}\[\](),;=+\-*\/%<>!?:#\.])/gy;
+    const re = /\s+|(<[^>\n]+>)|([A-Za-z_$][A-Za-z0-9_$]*)|((?:\d+\.\d+|\d+|\.\d+)(?:[eE][+-]?\d+)?)|("(?:\\.|[^"])*")|(==|!=|<=|>=|&&|\|\|)|([{}\[\](),;=+\-*\/%<>!?:#\.])/gy;
     let pos = 0;
     while (pos < source.length) {
       re.lastIndex = pos;
@@ -794,6 +794,14 @@ bolt_line(9);`
         return node;
       }
       if (t.value === "[") {
+        if (this.peek().type === "id" && this.peek().value === "for") {
+          this.next();
+          this.expect("(");
+          const args = this.parseArgs();
+          const body = this.parseExpression();
+          this.expect("]");
+          return { type: "listcomp", args, body };
+        }
         const first = this.match("]") ? null : this.parseExpression();
         if (first && this.match(":")) {
           const second = this.parseExpression();
@@ -856,6 +864,7 @@ bolt_line(9);`
       return 0;
     }
     if (expr.type === "array") return expr.values.map(v => evalExpr(v, env));
+    if (expr.type === "listcomp") return evalForArgs(expr.args, env, local => [evalExpr(expr.body, local)]);
     if (expr.type === "range") {
       const start = num(evalExpr(expr.start, env));
       const step = num(evalExpr(expr.step, env), 1);
