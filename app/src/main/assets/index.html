@@ -385,6 +385,20 @@
     </footer>
   </div>
 
+  <script type="module">
+    import ManifoldModule from "./vendor/manifold-3d/manifold.js";
+    window.ShapeForgeManifoldReady = ManifoldModule({
+      locateFile: path => "./vendor/manifold-3d/" + path
+    }).then(module => {
+      module.setup();
+      window.ShapeForgeManifold = module;
+      window.dispatchEvent(new Event("shapeforge-manifold-ready"));
+      return module;
+    }).catch(error => {
+      window.ShapeForgeManifoldError = error && error.message ? error.message : String(error);
+      window.dispatchEvent(new Event("shapeforge-manifold-ready"));
+    });
+  </script>
   <script>
   "use strict";
 
@@ -1146,8 +1160,121 @@ bolt_line(9);`
     return mesh(source.tris.map(t => t.map(p => transformPoint(matrix, p))), color || source.color);
   }
 
+  function manifoldModule() {
+    return window.ShapeForgeManifold || globalThis.ShapeForgeManifold || null;
+  }
+
+  function meshToManifold(source) {
+    const module = manifoldModule();
+    if (!module) throw new Error(window.ShapeForgeManifoldError || "Boolean engine is loading");
+    const verts = [];
+    const indices = [];
+    const map = new Map();
+    const key = p => p.map(v => Number(v).toPrecision(15)).join(",");
+    for (const t of source.tris) {
+      for (const p of t) {
+        const k = key(p);
+        let idx = map.get(k);
+        if (idx === undefined) {
+          idx = verts.length / 3;
+          map.set(k, idx);
+          verts.push(num(p[0]), num(p[1]), num(p[2]));
+        }
+        indices.push(idx);
+      }
+    }
+    return module.Manifold.ofMesh(new module.Mesh({
+      numProp: 3,
+      triVerts: new Uint32Array(indices),
+      vertProperties: new Float32Array(verts)
+    }));
+  }
+
+  function meshListToManifold(list) {
+    const module = manifoldModule();
+    if (!module) throw new Error(window.ShapeForgeManifoldError || "Boolean engine is loading");
+    const manifolds = list.filter(m => m.tris.length).map(meshToManifold);
+    if (!manifolds.length) return null;
+    if (manifolds.length === 1) return manifolds[0];
+    const result = module.Manifold.union(manifolds);
+    manifolds.forEach(m => m.delete && m.delete());
+    return result;
+  }
+
+  function manifoldToMesh(manifold, color) {
+    const raw = manifold.getMesh();
+    const tris = [];
+    for (let i = 0; i < raw.triVerts.length; i += 3) {
+      tris.push([0, 1, 2].map(j => {
+        const idx = raw.triVerts[i + j] * raw.numProp;
+        return [raw.vertProperties[idx], raw.vertProperties[idx + 1], raw.vertProperties[idx + 2]];
+      }));
+    }
+    return mesh(tris, color);
+  }
+
+  function evalBooleanCall(node, env, modules, matrix, color) {
+    const module = manifoldModule();
+    if (!module) throw new Error(window.ShapeForgeManifoldError || "Boolean engine is loading");
+    const parts = node.children.map(child => meshListToManifold(evalNodes([child], cloneEnv(env), modules, matrix, color))).filter(Boolean);
+    if (!parts.length) return [];
+    let result;
+    let temporary = null;
+    if (node.name === "difference") {
+      if (parts.length === 1) result = parts[0];
+      else {
+        temporary = module.Manifold.union(parts.slice(1));
+        result = parts[0].subtract(temporary);
+      }
+    } else {
+      result = parts.length === 1 ? parts[0] : module.Manifold.intersection(parts);
+    }
+    const out = [manifoldToMesh(result, color)];
+    if (temporary && temporary.delete) temporary.delete();
+    parts.forEach(p => { if (p !== result && p.delete) p.delete(); });
+    if (result.delete) result.delete();
+    return out;
+  }
+
   function shape2(points, color) {
     return { points, color: color || "#6fa8dc" };
+  }
+
+  function shapeListToCrossSection(list) {
+    const module = manifoldModule();
+    if (!module) throw new Error(window.ShapeForgeManifoldError || "Boolean engine is loading");
+    const sections = list.filter(s => s.points.length >= 3).map(s => module.CrossSection.ofPolygons([s.points.map(p => ({ x: p[0], y: p[1] }))], "Positive"));
+    if (!sections.length) return null;
+    if (sections.length === 1) return sections[0];
+    const result = module.CrossSection.union(sections);
+    sections.forEach(s => s.delete && s.delete());
+    return result;
+  }
+
+  function crossSectionToShapes(section, color) {
+    return section.toPolygons().map(points => shape2(points, color));
+  }
+
+  function eval2DBooleanCall(node, env, modules, matrix, color) {
+    const module = manifoldModule();
+    if (!module) throw new Error(window.ShapeForgeManifoldError || "Boolean engine is loading");
+    const parts = node.children.map(child => shapeListToCrossSection(eval2DNodes([child], cloneEnv(env), modules, matrix, color))).filter(Boolean);
+    if (!parts.length) return [];
+    let result, temporary = null;
+    if (node.name === "difference") {
+      if (parts.length === 1) result = parts[0];
+      else {
+        temporary = module.CrossSection.union(parts.slice(1));
+        result = parts[0].subtract(temporary);
+      }
+    } else {
+      result = parts.length === 1 ? parts[0] : module.CrossSection.intersection(parts);
+    }
+    const out = crossSectionToShapes(result, color);
+    if (temporary && temporary.delete) temporary.delete();
+    parts.forEach(p => { if (p !== result && p.delete) p.delete(); });
+    if (result.delete) result.delete();
+    return out;
   }
 
   function transformShape2(source, matrix, color) {
@@ -1287,6 +1414,9 @@ bolt_line(9);`
       case "union":
       case "group":
         return childShapes();
+      case "difference":
+      case "intersection":
+        return eval2DBooleanCall(node, env, modules, matrix, color);
       case "echo":
       case "assert":
         return [];
@@ -1422,7 +1552,7 @@ bolt_line(9);`
         return childMeshes();
       case "difference":
       case "intersection":
-        throw new Error(tr("unsupportedBoolean", node.name));
+        return evalBooleanCall(node, env, modules, matrix, color);
       default:
         notices.push(tr("unsupportedCall", node.name));
         return childMeshes();
@@ -1663,6 +1793,9 @@ bolt_line(9);`
     draw();
   }, { passive: false });
   window.addEventListener("resize", draw);
+  window.addEventListener("shapeforge-manifold-ready", () => {
+    if ((statusEl.style.color === "var(--bad)" || statusEl.textContent === "") && /difference|intersection/.test(editor.value)) renderScad();
+  });
 
   const storedLanguage = localStorage.getItem("language") || "auto";
   languageSelect.value = storedLanguage;

@@ -4,6 +4,7 @@
 const fs = require("fs");
 const path = require("path");
 const vm = require("vm");
+const { pathToFileURL } = require("url");
 
 function parseArgs(argv) {
   const libs = [];
@@ -263,7 +264,16 @@ const context = {
 };
 context.globalThis = context;
 
+async function main() {
 try {
+  const manifoldPath = path.join(__dirname, "../app/src/main/assets/vendor/manifold-3d/manifold.js");
+  if (fs.existsSync(manifoldPath)) {
+    const moduleFactory = (await import(pathToFileURL(manifoldPath).href)).default;
+    const manifold = await moduleFactory();
+    manifold.setup();
+    context.ShapeForgeManifold = manifold;
+    context.window.ShapeForgeManifold = manifold;
+  }
   vm.runInNewContext(match[1] + capture, context, { filename: "index.html" });
   const file = path.resolve(args.file);
   const libDirs = existingDirs([...args.libs, ...defaultLibDirs]);
@@ -287,3 +297,6 @@ try {
   console.log(JSON.stringify({ ok: false, error: String(error && error.message || error) }));
   process.exit(1);
 }
+}
+
+main();

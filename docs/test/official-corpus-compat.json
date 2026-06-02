@@ -2,32 +2,32 @@
   "summary": {
     "corpus": "/usr/share/openscad/examples",
     "total": 48,
-    "official_ok": 35,
-    "shape_ok": 21,
-    "match": 4
+    "official_ok": 29,
+    "shape_ok": 45,
+    "match": 5
   },
   "results": [
     {
       "file": "/usr/share/openscad/examples/Advanced/GEB.scad",
-      "official_ok": true,
-      "official": {
-        "triangles": 5888,
+      "official_ok": false,
+      "official_error": "ECHO: version = [2021, 1, 0]",
+      "shape": {
+        "ok": true,
+        "triangles": 36,
+        "meshes": 3,
         "bounds": {
           "min": [
-            -20.0,
-            -20.0,
-            -20.0
+            -20.000000000000004,
+            -20,
+            -20
           ],
           "max": [
-            20.0,
-            20.0,
-            20.0
+            20,
+            20,
+            20
           ]
-        }
-      },
-      "shape": {
-        "ok": false,
-        "error": "Unsupported boolean operation: intersection"
+        },
+        "status": "Unsupported: offset; Unsupported: text; Unsupported: offset"
       },
       "match": false
     },
@@ -99,31 +99,31 @@
     {
       "file": "/usr/share/openscad/examples/Advanced/children.scad",
       "official_ok": false,
-      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 23\nGeometry cache size in bytes: 266176\nCGAL Polyhedrons in cache: 41\nCGAL cache size in bytes: 42529216\nTotal rendering time: 0:00:08.901\n   Top level object is a 3D object:\n   Simple:        yes\n   Vertices:     4808\n   Halfedges:   17520\n   Edges:        8760\n   Halffacets:   7936\n   Facets:       3968\n   Volumes:        23",
+      "official_error": "ECHO: version = [2021, 1, 0]",
       "shape": {
-        "ok": false,
-        "error": "Unsupported boolean operation: difference"
+        "ok": true,
+        "triangles": 292,
+        "meshes": 2,
+        "bounds": {
+          "min": [
+            -4.903926372528076,
+            -4.903926372528076,
+            -4.56158447265625
+          ],
+          "max": [
+            4.903926372528076,
+            4.903926372528076,
+            4.56158447265625
+          ]
+        },
+        "status": "Unsupported: make_ring_of; Unsupported: make_ring_of; Unsupported: make_ring_of"
       },
       "match": false
     },
     {
       "file": "/usr/share/openscad/examples/Advanced/children_indexed.scad",
-      "official_ok": true,
-      "official": {
-        "triangles": 6990,
-        "bounds": {
-          "min": [
-            -116.733,
-            -21.7292,
-            -6.49952
-          ],
-          "max": [
-            71.6667,
-            66.6181,
-            8.33333
-          ]
-        }
-      },
+      "official_ok": false,
+      "official_error": "ECHO: version = [2021, 1, 0]",
       "shape": {
         "ok": true,
         "triangles": 440,
@@ -147,7 +147,7 @@
     {
       "file": "/usr/share/openscad/examples/Advanced/module_recursion.scad",
       "official_ok": false,
-      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 8186\nGeometry cache size in bytes: 3158768\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.278\n   Top level object is a 2D object:\n   Contours:      576\nCurrent top level object is not a 3D object.",
+      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 8186\nGeometry cache size in bytes: 3158768\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.390\n   Top level object is a 2D object:\n   Contours:      576\nCurrent top level object is not a 3D object.",
       "shape": {
         "ok": true,
         "triangles": 0,
@@ -191,7 +191,7 @@
             129.90752001199382
           ]
         },
-        "status": "Unsupported: offset; Unsupported: difference; Unsupported: offset"
+        "status": "Unsupported: offset; Unsupported: offset; Unsupported: children"
       },
       "match": false
     },
@@ -213,8 +213,11 @@
       "official_ok": false,
       "official_error": "ECHO: version = [2021, 1, 0]",
       "shape": {
-        "ok": false,
-        "error": "Unsupported boolean operation: difference"
+        "ok": true,
+        "triangles": 0,
+        "meshes": 0,
+        "bounds": null,
+        "status": "Unsupported: body; Unsupported: intersector; Unsupported: holes"
       },
       "match": false
     },
@@ -237,8 +240,22 @@
         }
       },
       "shape": {
-        "ok": false,
-        "error": "Unsupported boolean operation: intersection"
+        "ok": true,
+        "triangles": 2600,
+        "meshes": 4,
+        "bounds": {
+          "min": [
+            -34,
+            -9.945218953682733,
+            -9.945218953682733
+          ],
+          "max": [
+            31.5,
+            9.945218953682733,
+            9.945218953682733
+          ]
+        },
+        "status": "Rendered"
       },
       "match": false
     },
@@ -339,8 +356,22 @@
       "official_ok": false,
       "official_error": "ECHO: version = [2021, 1, 0]\nWARNING: Viewall and autocenter disabled in favor of $vp*",
       "shape": {
-        "ok": false,
-        "error": "Unsupported boolean operation: difference"
+        "ok": true,
+        "triangles": 14936,
+        "meshes": 1,
+        "bounds": {
+          "min": [
+            50.008384704589844,
+            -59.98041915893555,
+            50.00603485107422
+          ],
+          "max": [
+            169.99160766601562,
+            59.98041915893555,
+            169.99395751953125
+          ]
+        },
+        "status": "Unsupported: green; Unsupported: t; Unsupported: corn"
       },
       "match": false
     },
@@ -378,7 +409,7 @@
             21
           ]
         },
-        "status": "Unsupported: import; Unsupported: difference; Unsupported: projection"
+        "status": "Unsupported: import; Unsupported: projection; Unsupported: import"
       },
       "match": false
     },
@@ -428,8 +459,22 @@
         }
       },
       "shape": {
-        "ok": false,
-        "error": "Unsupported boolean operation: difference"
+        "ok": true,
+        "triangles": 12,
+        "meshes": 1,
+        "bounds": {
+          "min": [
+            -30,
+            -30,
+            -30
+          ],
+          "max": [
+            30,
+            30,
+            30
+          ]
+        },
+        "status": "Unsupported: text; Unsupported: text; Unsupported: text"
       },
       "match": false
     },
@@ -487,7 +532,7 @@
     {
       "file": "/usr/share/openscad/examples/Functions/list_comprehensions.scad",
       "official_ok": false,
-      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 18\nGeometry cache size in bytes: 58720\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.002\n   Top level object is a 2D object:\n   Contours:        9\nCurrent top level object is not a 3D object.",
+      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 18\nGeometry cache size in bytes: 58720\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.004\n   Top level object is a 2D object:\n   Contours:        9\nCurrent top level object is not a 3D object.",
       "shape": {
         "ok": true,
         "triangles": 0,
@@ -500,7 +545,7 @@
     {
       "file": "/usr/share/openscad/examples/Functions/polygon_areas.scad",
       "official_ok": false,
-      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 34\nGeometry cache size in bytes: 146688\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.091\n   Top level object is a 2D object:\n   Contours:       38\nCurrent top level object is not a 3D object.",
+      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 34\nGeometry cache size in bytes: 146688\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.248\n   Top level object is a 2D object:\n   Contours:       38\nCurrent top level object is not a 3D object.",
       "shape": {
         "ok": true,
         "triangles": 0,
@@ -513,7 +558,7 @@
     {
       "file": "/usr/share/openscad/examples/Functions/recursion.scad",
       "official_ok": false,
-      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 2\nGeometry cache size in bytes: 9536\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.081\n   Top level object is a 2D object:\n   Contours:       10\nCurrent top level object is not a 3D object.",
+      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 2\nGeometry cache size in bytes: 9536\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.254\n   Top level object is a 2D object:\n   Contours:       10\nCurrent top level object is not a 3D object.",
       "shape": {
         "ok": true,
         "triangles": 0,
@@ -543,7 +588,7 @@
       },
       "shape": {
         "ok": false,
-        "error": "Unsupported boolean operation: difference"
+        "error": "Not manifold"
       },
       "match": false
     },
@@ -566,8 +611,22 @@
         }
       },
       "shape": {
-        "ok": false,
-        "error": "Unsupported boolean operation: intersection"
+        "ok": true,
+        "triangles": 264,
+        "meshes": 1,
+        "bounds": {
+          "min": [
+            -15,
+            -15,
+            -20
+          ],
+          "max": [
+            15,
+            15,
+            15
+          ]
+        },
+        "status": "Rendered"
       },
       "match": false
     },
@@ -590,10 +649,24 @@
         }
       },
       "shape": {
-        "ok": false,
-        "error": "Unsupported boolean operation: difference"
+        "ok": true,
+        "triangles": 192,
+        "meshes": 1,
+        "bounds": {
+          "min": [
+            -20,
+            -20,
+            -20
+          ],
+          "max": [
+            20,
+            20,
+            20
+          ]
+        },
+        "status": "Rendered"
       },
-      "match": false
+      "match": true
     },
     {
       "file": "/usr/share/openscad/examples/Old/example004.scad",
@@ -614,8 +687,22 @@
         }
       },
       "shape": {
-        "ok": false,
-        "error": "Unsupported boolean operation: difference"
+        "ok": true,
+        "triangles": 864,
+        "meshes": 1,
+        "bounds": {
+          "min": [
+            -15,
+            -15,
+            -15
+          ],
+          "max": [
+            15,
+            15,
+            15
+          ]
+        },
+        "status": "Rendered"
       },
       "match": false
     },
@@ -638,8 +725,22 @@
         }
       },
       "shape": {
-        "ok": false,
-        "error": "Unsupported boolean operation: difference"
+        "ok": true,
+        "triangles": 1030,
+        "meshes": 8,
+        "bounds": {
+          "min": [
+            -120,
+            -119.34262744419281,
+            -120
+          ],
+          "max": [
+            120,
+            119.34262744419281,
+            160
+          ]
+        },
+        "status": "Rendered"
       },
       "match": false
     },
@@ -648,8 +749,22 @@
       "official_ok": false,
       "official_error": "ECHO: version = [2021, 1, 0]",
       "shape": {
-        "ok": false,
-        "error": "Unsupported boolean operation: difference"
+        "ok": true,
+        "triangles": 7168,
+        "meshes": 1,
+        "bounds": {
+          "min": [
+            0,
+            0.05478104576468468,
+            0.05478104576468468
+          ],
+          "max": [
+            100,
+            99.94522094726562,
+            99.94522094726562
+          ]
+        },
+        "status": "Unsupported function: is_list; Unsupported: hull"
       },
       "match": false
     },
@@ -672,8 +787,11 @@
         }
       },
       "shape": {
-        "ok": false,
-        "error": "Unsupported boolean operation: difference"
+        "ok": true,
+        "triangles": 0,
+        "meshes": 0,
+        "bounds": null,
+        "status": "Unsupported: rotate_extrude; Unsupported: import; Unsupported: import"
       },
       "match": false
     },
@@ -696,8 +814,11 @@
         }
       },
       "shape": {
-        "ok": false,
-        "error": "Unsupported boolean operation: difference"
+        "ok": true,
+        "triangles": 0,
+        "meshes": 0,
+        "bounds": null,
+        "status": "Unsupported: import; Unsupported: import; Unsupported: import"
       },
       "match": false
     },
@@ -720,32 +841,24 @@
         }
       },
       "shape": {
-        "ok": false,
-        "error": "Unsupported boolean operation: intersection"
+        "ok": true,
+        "triangles": 0,
+        "meshes": 3,
+        "bounds": null,
+        "status": "Unsupported function: dxf_dim; Unsupported function: dxf_dim; Unsupported function: dxf_dim"
       },
       "match": false
     },
     {
       "file": "/usr/share/openscad/examples/Old/example010.scad",
-      "official_ok": true,
-      "official": {
-        "triangles": 9542,
-        "bounds": {
-          "min": [
-            -22.5,
-            -22.5,
-            -10.9927
-          ],
-          "max": [
-            22.5,
-            22.5,
-            7.168
-          ]
-        }
-      },
+      "official_ok": false,
+      "official_error": "ECHO: version = [2021, 1, 0]",
       "shape": {
-        "ok": false,
-        "error": "Unsupported boolean operation: intersection"
+        "ok": true,
+        "triangles": 0,
+        "meshes": 0,
+        "bounds": null,
+        "status": "Unsupported: surface; Unsupported: surface"
       },
       "match": false
     },
@@ -806,8 +919,22 @@
         }
       },
       "shape": {
-        "ok": false,
-        "error": "Unsupported boolean operation: difference"
+        "ok": true,
+        "triangles": 896,
+        "meshes": 1,
+        "bounds": {
+          "min": [
+            -20,
+            -19.890438079833984,
+            -19.890438079833984
+          ],
+          "max": [
+            20,
+            19.890438079833984,
+            19.890438079833984
+          ]
+        },
+        "status": "Unsupported: import"
       },
       "match": false
     },
@@ -830,8 +957,11 @@
         }
       },
       "shape": {
-        "ok": false,
-        "error": "Unsupported boolean operation: intersection"
+        "ok": true,
+        "triangles": 0,
+        "meshes": 0,
+        "bounds": null,
+        "status": "Unsupported: import; Unsupported: import; Unsupported: import"
       },
       "match": false
     },
@@ -876,10 +1006,13 @@
     {
       "file": "/usr/share/openscad/examples/Old/example015.scad",
       "official_ok": false,
-      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 17\nGeometry cache size in bytes: 11376\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.003\n   Top level object is a 2D object:\n   Contours:        8\nCurrent top level object is not a 3D object.",
+      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 17\nGeometry cache size in bytes: 11376\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.042\n   Top level object is a 2D object:\n   Contours:        8\nCurrent top level object is not a 3D object.",
       "shape": {
-        "ok": false,
-        "error": "Unsupported boolean operation: difference"
+        "ok": true,
+        "triangles": 0,
+        "meshes": 0,
+        "bounds": null,
+        "status": "2D shape requires extrusion: square; 2D shape requires extrusion: square; 2D shape requires extrusion: square"
       },
       "match": false
     },
@@ -902,8 +1035,22 @@
         }
       },
       "shape": {
-        "ok": false,
-        "error": "Unsupported boolean operation: difference"
+        "ok": true,
+        "triangles": 64,
+        "meshes": 1,
+        "bounds": {
+          "min": [
+            -32.5,
+            -14,
+            -14
+          ],
+          "max": [
+            32.5,
+            14,
+            14
+          ]
+        },
+        "status": "Unsupported: render; Unsupported: import; Unsupported: render"
       },
       "match": false
     },
@@ -926,8 +1073,22 @@
         }
       },
       "shape": {
-        "ok": false,
-        "error": "Unsupported boolean operation: intersection"
+        "ok": true,
+        "triangles": 1364,
+        "meshes": 5,
+        "bounds": {
+          "min": [
+            -102,
+            -101.44123332947493,
+            -1.8369701987210297e-16
+          ],
+          "max": [
+            102,
+            102,
+            80
+          ]
+        },
+        "status": "Unsupported: rotate_extrude; 2D shape requires extrusion: square; 2D shape requires extrusion: square"
       },
       "match": false
     },
@@ -960,22 +1121,8 @@
     },
     {
       "file": "/usr/share/openscad/examples/Old/example019.scad",
-      "official_ok": true,
-      "official": {
-        "triangles": 3912,
-        "bounds": {
-          "min": [
-            -105.918,
-            -5.97951,
-            -30.0
-          ],
-          "max": [
-            106.0,
-            5.97951,
-            45.0
-          ]
-        }
-      },
+      "official_ok": false,
+      "official_error": "ECHO: version = [2021, 1, 0]",
       "shape": {
         "ok": true,
         "triangles": 2952,
@@ -1015,53 +1162,53 @@
         }
       },
       "shape": {
-        "ok": false,
-        "error": "Unsupported boolean operation: difference"
+        "ok": true,
+        "triangles": 18524,
+        "meshes": 3,
+        "bounds": {
+          "min": [
+            -110,
+            -109.98480401602164,
+            0
+          ],
+          "max": [
+            109.9658100200898,
+            109.98480401602163,
+            100
+          ]
+        },
+        "status": "Rendered"
       },
       "match": false
     },
     {
       "file": "/usr/share/openscad/examples/Old/example021.scad",
-      "official_ok": true,
-      "official": {
-        "triangles": 1280,
+      "official_ok": false,
+      "official_error": "ECHO: version = [2021, 1, 0]",
+      "shape": {
+        "ok": true,
+        "triangles": 488,
+        "meshes": 12,
         "bounds": {
           "min": [
-            -51.6577,
-            -23.8481,
-            -21.4612
+            -54.14814376831055,
+            -24.14814567565918,
+            -21.244657516479492
           ],
           "max": [
-            53.4875,
-            21.7394,
-            24.0646
+            54.14814376831055,
+            24.14814567565918,
+            23.84808921813965
           ]
-        }
-      },
-      "shape": {
-        "ok": false,
-        "error": "Unsupported boolean operation: difference"
+        },
+        "status": "Unsupported: projection; Unsupported: sphere; Unsupported: cylinder"
       },
       "match": false
     },
     {
       "file": "/usr/share/openscad/examples/Old/example022.scad",
-      "official_ok": true,
-      "official": {
-        "triangles": 1320,
-        "bounds": {
-          "min": [
-            -25.0,
-            -15.0,
-            -20.0
-          ],
-          "max": [
-            25.0,
-            15.0,
-            20.0
-          ]
-        }
-      },
+      "official_ok": false,
+      "official_error": "ECHO: version = [2021, 1, 0]",
       "shape": {
         "ok": true,
         "triangles": 3036,
@@ -1112,7 +1259,7 @@
       "official_error": "ECHO: version = [2021, 1, 0]",
       "shape": {
         "ok": false,
-        "error": "Unsupported boolean operation: difference"
+        "error": ""
       },
       "match": false
     },
@@ -1121,8 +1268,22 @@
       "official_ok": false,
       "official_error": "",
       "shape": {
-        "ok": false,
-        "error": "Unsupported boolean operation: difference"
+        "ok": true,
+        "triangles": 226,
+        "meshes": 10,
+        "bounds": {
+          "min": [
+            -23.391989175795594,
+            -24.595718738501905,
+            0
+          ],
+          "max": [
+            25,
+            24.81823967245822,
+            53.5
+          ]
+        },
+        "status": "Unknown variable: width; Unsupported: make; Unsupported: make_ring_of"
       },
       "match": false
     },
@@ -1145,8 +1306,22 @@
         }
       },
       "shape": {
-        "ok": false,
-        "error": "Unsupported boolean operation: difference"
+        "ok": true,
+        "triangles": 76,
+        "meshes": 2,
+        "bounds": {
+          "min": [
+            -80,
+            -38.042259216308594,
+            -2
+          ],
+          "max": [
+            80,
+            38.042259216308594,
+            2
+          ]
+        },
+        "status": "Unsupported: text; Unsupported: text"
       },
       "match": false
     }
