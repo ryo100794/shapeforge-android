@@ -2,15 +2,29 @@
   "summary": {
     "corpus": "/usr/share/openscad/examples",
     "total": 48,
-    "official_ok": 29,
+    "official_ok": 33,
     "shape_ok": 45,
     "match": 5
   },
   "results": [
     {
       "file": "/usr/share/openscad/examples/Advanced/GEB.scad",
-      "official_ok": false,
-      "official_error": "ECHO: version = [2021, 1, 0]",
+      "official_ok": true,
+      "official": {
+        "triangles": 5888,
+        "bounds": {
+          "min": [
+            -20.0,
+            -20.0,
+            -20.0
+          ],
+          "max": [
+            20.0,
+            20.0,
+            20.0
+          ]
+        }
+      },
       "shape": {
         "ok": true,
         "triangles": 36,
@@ -147,7 +161,7 @@
     {
       "file": "/usr/share/openscad/examples/Advanced/module_recursion.scad",
       "official_ok": false,
-      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 8186\nGeometry cache size in bytes: 3158768\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.390\n   Top level object is a 2D object:\n   Contours:      576\nCurrent top level object is not a 3D object.",
+      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 8186\nGeometry cache size in bytes: 3158768\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.311\n   Top level object is a 2D object:\n   Contours:      576\nCurrent top level object is not a 3D object.",
       "shape": {
         "ok": true,
         "triangles": 0,
@@ -177,18 +191,18 @@
       },
       "shape": {
         "ok": true,
-        "triangles": 1764,
-        "meshes": 4,
+        "triangles": 12,
+        "meshes": 2,
         "bounds": {
           "min": [
-            -29.90752001199384,
-            -29.90752001199384,
+            -25,
+            -25,
             0
           ],
           "max": [
-            29.90752001199384,
-            29.90752001199384,
-            129.90752001199382
+            25,
+            25,
+            20
           ]
         },
         "status": "Unsupported: offset; Unsupported: offset; Unsupported: children"
@@ -409,7 +423,7 @@
             21
           ]
         },
-        "status": "Unsupported: import; Unsupported: projection; Unsupported: import"
+        "status": "Unsupported: projection; Unsupported: import; Unsupported: projection"
       },
       "match": false
     },
@@ -433,10 +447,21 @@
       },
       "shape": {
         "ok": true,
-        "triangles": 0,
-        "meshes": 0,
-        "bounds": null,
-        "status": "Unsupported: rotate_extrude; 2D shape requires extrusion: square; Unsupported: rotate_extrude"
+        "triangles": 812,
+        "meshes": 5,
+        "bounds": {
+          "min": [
+            -12.135254859924316,
+            -14.265848159790039,
+            0
+          ],
+          "max": [
+            57.5,
+            56.643489837646484,
+            20
+          ]
+        },
+        "status": "Unsupported: text"
       },
       "match": false
     },
@@ -532,7 +557,7 @@
     {
       "file": "/usr/share/openscad/examples/Functions/list_comprehensions.scad",
       "official_ok": false,
-      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 18\nGeometry cache size in bytes: 58720\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.004\n   Top level object is a 2D object:\n   Contours:        9\nCurrent top level object is not a 3D object.",
+      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 18\nGeometry cache size in bytes: 58720\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.003\n   Top level object is a 2D object:\n   Contours:        9\nCurrent top level object is not a 3D object.",
       "shape": {
         "ok": true,
         "triangles": 0,
@@ -545,7 +570,7 @@
     {
       "file": "/usr/share/openscad/examples/Functions/polygon_areas.scad",
       "official_ok": false,
-      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 34\nGeometry cache size in bytes: 146688\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.248\n   Top level object is a 2D object:\n   Contours:       38\nCurrent top level object is not a 3D object.",
+      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 34\nGeometry cache size in bytes: 146688\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.115\n   Top level object is a 2D object:\n   Contours:       38\nCurrent top level object is not a 3D object.",
       "shape": {
         "ok": true,
         "triangles": 0,
@@ -558,7 +583,7 @@
     {
       "file": "/usr/share/openscad/examples/Functions/recursion.scad",
       "official_ok": false,
-      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 2\nGeometry cache size in bytes: 9536\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.254\n   Top level object is a 2D object:\n   Contours:       10\nCurrent top level object is not a 3D object.",
+      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 2\nGeometry cache size in bytes: 9536\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.094\n   Top level object is a 2D object:\n   Contours:       10\nCurrent top level object is not a 3D object.",
       "shape": {
         "ok": true,
         "triangles": 0,
@@ -791,7 +816,7 @@
         "triangles": 0,
         "meshes": 0,
         "bounds": null,
-        "status": "Unsupported: rotate_extrude; Unsupported: import; Unsupported: import"
+        "status": "Unsupported: import; Unsupported: import; Unsupported: import"
       },
       "match": false
     },
@@ -843,7 +868,7 @@
       "shape": {
         "ok": true,
         "triangles": 0,
-        "meshes": 3,
+        "meshes": 0,
         "bounds": null,
         "status": "Unsupported function: dxf_dim; Unsupported function: dxf_dim; Unsupported function: dxf_dim"
       },
@@ -851,8 +876,22 @@
     },
     {
       "file": "/usr/share/openscad/examples/Old/example010.scad",
-      "official_ok": false,
-      "official_error": "ECHO: version = [2021, 1, 0]",
+      "official_ok": true,
+      "official": {
+        "triangles": 9542,
+        "bounds": {
+          "min": [
+            -22.5,
+            -22.5,
+            -10.9927
+          ],
+          "max": [
+            22.5,
+            22.5,
+            7.168
+          ]
+        }
+      },
       "shape": {
         "ok": true,
         "triangles": 0,
@@ -1006,7 +1045,7 @@
     {
       "file": "/usr/share/openscad/examples/Old/example015.scad",
       "official_ok": false,
-      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 17\nGeometry cache size in bytes: 11376\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.042\n   Top level object is a 2D object:\n   Contours:        8\nCurrent top level object is not a 3D object.",
+      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 17\nGeometry cache size in bytes: 11376\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.005\n   Top level object is a 2D object:\n   Contours:        8\nCurrent top level object is not a 3D object.",
       "shape": {
         "ok": true,
         "triangles": 0,
@@ -1088,7 +1127,7 @@
             80
           ]
         },
-        "status": "Unsupported: rotate_extrude; 2D shape requires extrusion: square; 2D shape requires extrusion: square"
+        "status": "Rendered"
       },
       "match": false
     },
@@ -1183,32 +1222,49 @@
     },
     {
       "file": "/usr/share/openscad/examples/Old/example021.scad",
-      "official_ok": false,
-      "official_error": "ECHO: version = [2021, 1, 0]",
-      "shape": {
-        "ok": true,
-        "triangles": 488,
-        "meshes": 12,
+      "official_ok": true,
+      "official": {
+        "triangles": 1280,
         "bounds": {
           "min": [
-            -54.14814376831055,
-            -24.14814567565918,
-            -21.244657516479492
+            -51.6577,
+            -23.8481,
+            -21.4612
           ],
           "max": [
-            54.14814376831055,
-            24.14814567565918,
-            23.84808921813965
+            53.4875,
+            21.7394,
+            24.0646
           ]
-        },
+        }
+      },
+      "shape": {
+        "ok": true,
+        "triangles": 0,
+        "meshes": 10,
+        "bounds": null,
         "status": "Unsupported: projection; Unsupported: sphere; Unsupported: cylinder"
       },
       "match": false
     },
     {
       "file": "/usr/share/openscad/examples/Old/example022.scad",
-      "official_ok": false,
-      "official_error": "ECHO: version = [2021, 1, 0]",
+      "official_ok": true,
+      "official": {
+        "triangles": 1320,
+        "bounds": {
+          "min": [
+            -25.0,
+            -15.0,
+            -20.0
+          ],
+          "max": [
+            25.0,
+            15.0,
+            20.0
+          ]
+        }
+      },
       "shape": {
         "ok": true,
         "triangles": 3036,

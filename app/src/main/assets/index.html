@@ -1347,7 +1347,10 @@ bolt_line(9);`
       else if (node.type === "module") modules[node.name] = node;
       else if (node.type === "function") env.__functions[node.name] = node;
       else if (node.type === "if") out = out.concat(eval2DNodes(evalExpr(node.cond, env) ? node.thenBody : node.elseBody, cloneEnv(env), modules, matrix, color));
-      else if (node.type === "call") out = out.concat(eval2DCall(node, env, modules, matrix, color));
+      else if (node.type === "call") {
+        if (node.modifier === "*" || node.modifier === "%") continue;
+        out = out.concat(eval2DCall(node, env, modules, matrix, color));
+      }
     }
     return out;
   }
@@ -1450,6 +1453,7 @@ bolt_line(9);`
       } else if (node.type === "directive") {
         notices.push((node.name === "use" ? "Use" : "Include") + " reference: " + node.path);
       } else if (node.type === "call") {
+        if (node.modifier === "*" || node.modifier === "%") continue;
         out = out.concat(evalCall(node, env, modules, matrix, color));
       }
     }
@@ -1527,6 +1531,19 @@ bolt_line(9);`
         const scaleValue = get("scale", -1, 1);
         const shapes = eval2DNodes(node.children, cloneEnv(env), modules, matIdentity(), color);
         return [applyMatrixToMesh(meshLinearExtrude(shapes, height, center, scaleValue, twist, slices, color), matrix)];
+      }
+      case "rotate_extrude": {
+        const module = manifoldModule();
+        if (!module) throw new Error(window.ShapeForgeManifoldError || "Boolean engine is loading");
+        const angle = num(get("angle", -1, 360), 360);
+        const shapes = eval2DNodes(node.children, cloneEnv(env), modules, matIdentity(), color);
+        const section = shapeListToCrossSection(shapes);
+        if (!section) return [];
+        const result = section.revolve(localFragments(1), angle);
+        const out = [applyMatrixToMesh(manifoldToMesh(result, color), matrix)];
+        if (section.delete) section.delete();
+        if (result.delete) result.delete();
+        return out;
       }
       case "square":
       case "circle":
