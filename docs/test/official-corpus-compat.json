@@ -2,7 +2,7 @@
   "summary": {
     "corpus": "/usr/share/openscad/examples",
     "total": 48,
-    "official_ok": 33,
+    "official_ok": 35,
     "shape_ok": 45,
     "match": 5
   },
@@ -41,7 +41,7 @@
             20
           ]
         },
-        "status": "Unsupported: offset; Unsupported: text; Unsupported: offset"
+        "status": "Unsupported: text; Unsupported: text; Unsupported: text"
       },
       "match": false
     },
@@ -65,10 +65,21 @@
       },
       "shape": {
         "ok": true,
-        "triangles": 0,
-        "meshes": 0,
-        "bounds": null,
-        "status": "Unsupported: plate; Unknown variable: $t; Unsupported function: position"
+        "triangles": 3836,
+        "meshes": 6,
+        "bounds": {
+          "min": [
+            -70.66322326660156,
+            -3.9780875814730936,
+            -6
+          ],
+          "max": [
+            20.658737182617188,
+            61.989043790736545,
+            6
+          ]
+        },
+        "status": "Unknown variable: $t"
       },
       "match": false
     },
@@ -116,52 +127,66 @@
       "official_error": "ECHO: version = [2021, 1, 0]",
       "shape": {
         "ok": true,
-        "triangles": 292,
-        "meshes": 2,
+        "triangles": 4184,
+        "meshes": 34,
         "bounds": {
           "min": [
-            -4.903926372528076,
-            -4.903926372528076,
-            -4.56158447265625
+            -11,
+            -11,
+            -5
           ],
           "max": [
-            4.903926372528076,
-            4.903926372528076,
-            4.56158447265625
+            11,
+            11,
+            12.2
           ]
         },
-        "status": "Unsupported: make_ring_of; Unsupported: make_ring_of; Unsupported: make_ring_of"
+        "status": "Unsupported: text; Unsupported: text; Unsupported: text"
       },
       "match": false
     },
     {
       "file": "/usr/share/openscad/examples/Advanced/children_indexed.scad",
-      "official_ok": false,
-      "official_error": "ECHO: version = [2021, 1, 0]",
+      "official_ok": true,
+      "official": {
+        "triangles": 6990,
+        "bounds": {
+          "min": [
+            -116.733,
+            -21.7292,
+            -6.49952
+          ],
+          "max": [
+            71.6667,
+            66.6181,
+            8.33333
+          ]
+        }
+      },
       "shape": {
         "ok": true,
-        "triangles": 440,
-        "meshes": 6,
+        "triangles": 1106,
+        "meshes": 18,
         "bounds": {
           "min": [
             -52.5,
-            -23.970835496392215,
-            -3.899711648727295
+            15.833333333333334,
+            -6.499519414545491
           ],
           "max": [
-            54,
-            -16.029164503607785,
-            5
+            71.66666666666667,
+            66.61805916065369,
+            8.333333333333332
           ]
         },
-        "status": "Unsupported: align_in_grid_and_add_text; Unsupported: align_in_grid_and_add_text; Unsupported: align_in_grid_and_add_text"
+        "status": "Unsupported: text; Unsupported: text; Unsupported: text"
       },
       "match": false
     },
     {
       "file": "/usr/share/openscad/examples/Advanced/module_recursion.scad",
       "official_ok": false,
-      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 8186\nGeometry cache size in bytes: 3158768\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.311\n   Top level object is a 2D object:\n   Contours:      576\nCurrent top level object is not a 3D object.",
+      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 8186\nGeometry cache size in bytes: 3158768\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.305\n   Top level object is a 2D object:\n   Contours:      576\nCurrent top level object is not a 3D object.",
       "shape": {
         "ok": true,
         "triangles": 0,
@@ -191,21 +216,21 @@
       },
       "shape": {
         "ok": true,
-        "triangles": 12,
+        "triangles": 708,
         "meshes": 2,
         "bounds": {
           "min": [
-            -25,
-            -25,
+            -35,
+            -35,
             0
           ],
           "max": [
-            25,
-            25,
-            20
+            35,
+            35,
+            40
           ]
         },
-        "status": "Unsupported: offset; Unsupported: offset; Unsupported: children"
+        "status": "Rendered"
       },
       "match": false
     },
@@ -228,10 +253,21 @@
       "official_error": "ECHO: version = [2021, 1, 0]",
       "shape": {
         "ok": true,
-        "triangles": 0,
-        "meshes": 0,
-        "bounds": null,
-        "status": "Unsupported: body; Unsupported: intersector; Unsupported: holes"
+        "triangles": 15116,
+        "meshes": 17,
+        "bounds": {
+          "min": [
+            -27.495241107909287,
+            -7.5,
+            -42.5
+          ],
+          "max": [
+            32.5,
+            7.5,
+            7.5
+          ]
+        },
+        "status": "Rendered"
       },
       "match": false
     },
@@ -293,10 +329,21 @@
       },
       "shape": {
         "ok": true,
-        "triangles": 0,
-        "meshes": 0,
-        "bounds": null,
-        "status": "Unsupported: LetterBlock"
+        "triangles": 12,
+        "meshes": 1,
+        "bounds": {
+          "min": [
+            -15,
+            -15,
+            0
+          ],
+          "max": [
+            15,
+            15,
+            15
+          ]
+        },
+        "status": "Unsupported: text"
       },
       "match": false
     },
@@ -358,10 +405,21 @@
       },
       "shape": {
         "ok": true,
-        "triangles": 0,
-        "meshes": 0,
-        "bounds": null,
-        "status": "Unsupported: Logo"
+        "triangles": 11832,
+        "meshes": 1,
+        "bounds": {
+          "min": [
+            -24.974153518676758,
+            -24.974153518676758,
+            -24.974153518676758
+          ],
+          "max": [
+            24.974153518676758,
+            24.974153518676758,
+            24.974153518676758
+          ]
+        },
+        "status": "Rendered"
       },
       "match": false
     },
@@ -372,7 +430,7 @@
       "shape": {
         "ok": true,
         "triangles": 14936,
-        "meshes": 1,
+        "meshes": 5,
         "bounds": {
           "min": [
             50.008384704589844,
@@ -385,7 +443,7 @@
             169.99395751953125
           ]
         },
-        "status": "Unsupported: green; Unsupported: t; Unsupported: corn"
+        "status": "Unsupported: text; Unsupported: text; Unsupported: text"
       },
       "match": false
     },
@@ -570,26 +628,26 @@
     {
       "file": "/usr/share/openscad/examples/Functions/polygon_areas.scad",
       "official_ok": false,
-      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 34\nGeometry cache size in bytes: 146688\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.115\n   Top level object is a 2D object:\n   Contours:       38\nCurrent top level object is not a 3D object.",
+      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 34\nGeometry cache size in bytes: 146688\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.202\n   Top level object is a 2D object:\n   Contours:       38\nCurrent top level object is not a 3D object.",
       "shape": {
         "ok": true,
         "triangles": 0,
         "meshes": 0,
         "bounds": null,
-        "status": "Unsupported: text; Unsupported: shapeWithArea; Unsupported: shapeWithArea"
+        "status": "Unsupported: text; 2D shape requires extrusion: polygon; Unknown variable: areas"
       },
       "match": false
     },
     {
       "file": "/usr/share/openscad/examples/Functions/recursion.scad",
       "official_ok": false,
-      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 2\nGeometry cache size in bytes: 9536\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.094\n   Top level object is a 2D object:\n   Contours:       10\nCurrent top level object is not a 3D object.",
+      "official_error": "ECHO: version = [2021, 1, 0]\nGeometries in cache: 2\nGeometry cache size in bytes: 9536\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nTotal rendering time: 0:00:00.146\n   Top level object is a 2D object:\n   Contours:       10\nCurrent top level object is not a 3D object.",
       "shape": {
         "ok": true,
         "triangles": 0,
         "meshes": 0,
         "bounds": null,
-        "status": "Unsupported function: str; Unsupported: text"
+        "status": "Unsupported: text"
       },
       "match": false
     },
@@ -775,7 +833,7 @@
       "official_error": "ECHO: version = [2021, 1, 0]",
       "shape": {
         "ok": true,
-        "triangles": 7168,
+        "triangles": 4208,
         "meshes": 1,
         "bounds": {
           "min": [
@@ -789,7 +847,7 @@
             99.94522094726562
           ]
         },
-        "status": "Unsupported function: is_list; Unsupported: hull"
+        "status": "Rendered"
       },
       "match": false
     },
@@ -1024,21 +1082,21 @@
       },
       "shape": {
         "ok": true,
-        "triangles": 12,
+        "triangles": 108,
         "meshes": 1,
         "bounds": {
           "min": [
-            -50,
+            -12.512228965759277,
             -10,
             -10
           ],
           "max": [
-            50,
+            12.512228965759277,
             10,
             10
           ]
         },
-        "status": "Unsupported: intersection_for; Unknown variable: i"
+        "status": "Rendered"
       },
       "match": false
     },
@@ -1075,7 +1133,7 @@
       },
       "shape": {
         "ok": true,
-        "triangles": 64,
+        "triangles": 108,
         "meshes": 1,
         "bounds": {
           "min": [
@@ -1089,7 +1147,7 @@
             14
           ]
         },
-        "status": "Unsupported: render; Unsupported: import; Unsupported: render"
+        "status": "Unsupported: import; Unsupported: import; Unsupported: import"
       },
       "match": false
     },
@@ -1151,17 +1209,42 @@
       },
       "shape": {
         "ok": true,
-        "triangles": 0,
-        "meshes": 0,
-        "bounds": null,
-        "status": "Unknown variable: $children; Unknown variable: $children; Unknown variable: $children"
+        "triangles": 4288,
+        "meshes": 28,
+        "bounds": {
+          "min": [
+            -185.35533905932738,
+            -185.35533905932738,
+            -35.35533905932738
+          ],
+          "max": [
+            185.35533905932738,
+            185.35533905932738,
+            35.35533905932738
+          ]
+        },
+        "status": "Rendered"
       },
       "match": false
     },
     {
       "file": "/usr/share/openscad/examples/Old/example019.scad",
-      "official_ok": false,
-      "official_error": "ECHO: version = [2021, 1, 0]",
+      "official_ok": true,
+      "official": {
+        "triangles": 3912,
+        "bounds": {
+          "min": [
+            -105.918,
+            -5.97951,
+            -30.0
+          ],
+          "max": [
+            106.0,
+            5.97951,
+            45.0
+          ]
+        }
+      },
       "shape": {
         "ok": true,
         "triangles": 2952,
@@ -1325,21 +1408,21 @@
       "official_error": "",
       "shape": {
         "ok": true,
-        "triangles": 226,
-        "meshes": 10,
+        "triangles": 4000,
+        "meshes": 17,
         "bounds": {
           "min": [
-            -23.391989175795594,
-            -24.595718738501905,
+            -24.998756408691406,
+            -24.99968910217285,
             0
           ],
           "max": [
             25,
-            24.81823967245822,
+            24.99968910217285,
             53.5
           ]
         },
-        "status": "Unknown variable: width; Unsupported: make; Unsupported: make_ring_of"
+        "status": "Unknown variable: width"
       },
       "match": false
     },
