@@ -26,17 +26,17 @@ These links are references only. ShapeForge does not copy or embed upstream sour
 ## Current Surface
 
 - Primitives: `cube`, `sphere`, `cylinder`, `polyhedron`
-- 2D/extrusion: `square`, `circle`, `polygon`, `linear_extrude`, `rotate_extrude`, `offset`, 2D `hull`
-- Transforms: `translate`, axis-aware `rotate`, `scale`, `mirror`, `color`
+- 2D/extrusion: `square`, `circle`, `polygon`, `linear_extrude`, `rotate_extrude`, `projection`, `offset`, 2D `hull`
+- Transforms: `translate`, axis-aware `rotate`, `multmatrix`, `scale`, `mirror`, `color`
 - Structure: `union`, `group`, `render`, `children()` / `$children`, forward-referenced user `module` and `function` definitions
-- Control flow: `for`, `if`, `assign`; `include`/`use` references are parsed as references
-- Basic variables, named arguments, arrays/ranges/indexing, arithmetic, comparisons, ternaries, vector `.x/.y/.z`, and common math functions
+- Control flow: `for`, `intersection_for`, `if`, `assign`; `include`/`use` references are parsed as references
+- Basic variables, named arguments, arrays/ranges/indexing, arithmetic including matrix multiplication, comparisons, ternaries, vector `.x/.y/.z`, seeded `rands`, and common math functions
 
 ## Known Gaps Toward Full Compatibility
 
-- Exact Boolean/tessellation parity for `difference`, `intersection`, `hull`, `offset`, and extrusions
+- Exact Boolean/tessellation parity for `difference`, `intersection`, `hull`, `offset`, `projection`, and extrusions
 - Remaining list-comprehension edge cases and recursive function edge cases
-- Built-ins such as `text`, `minkowski`, `projection`, `surface`, `import`
+- Built-ins such as `text`, `minkowski`, `surface`, DXF import, and general in-app file import
 - Remaining `$fn` / `$fa` / `$fs` tessellation edge cases and numerical edge cases
 
 ## Build
@@ -59,7 +59,7 @@ scripts/official_corpus_compare.py --corpus /usr/share/openscad/libraries
 
 Latest local results:
 
-- Official examples: 48 files, official rendered 35, ShapeForge rendered 45, exact model matches 5.
+- Official examples: 48 files, official rendered 31, ShapeForge rendered 45, exact model matches 5.
 - MCAD libraries: 38 files, official rendered 6, ShapeForge rendered 23, exact model matches 0.
 
 Reports are written to `docs/test/official-corpus-compat.json` and `docs/test/mcad-corpus-compat.json`.

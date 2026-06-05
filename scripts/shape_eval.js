@@ -149,6 +149,35 @@ function topLevelDefinitions(source) {
   return definitions.join("\n\n");
 }
 
+function parseStlMesh(filePath) {
+  const data = fs.readFileSync(filePath);
+  const tris = [];
+  if (data.length >= 84) {
+    const count = data.readUInt32LE(80);
+    if (84 + count * 50 === data.length) {
+      let offset = 84;
+      for (let i = 0; i < count; i++) {
+        offset += 12;
+        const tri = [];
+        for (let v = 0; v < 3; v++) {
+          tri.push([data.readFloatLE(offset), data.readFloatLE(offset + 4), data.readFloatLE(offset + 8)]);
+          offset += 12;
+        }
+        offset += 2;
+        tris.push(tri);
+      }
+      return { tris };
+    }
+  }
+  const vertices = [];
+  for (const line of data.toString("utf8").split(/\r?\n/)) {
+    const match = line.trim().match(/^vertex\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)/i);
+    if (match) vertices.push([Number(match[1]), Number(match[2]), Number(match[3])]);
+  }
+  for (let i = 0; i + 2 < vertices.length; i += 3) tris.push([vertices[i], vertices[i + 1], vertices[i + 2]]);
+  return { tris };
+}
+
 function preprocessScad(source, filePath, libDirs, seen = new Set()) {
   const absolutePath = path.resolve(filePath);
   if (seen.has(absolutePath)) return "";
@@ -277,6 +306,15 @@ try {
   vm.runInNewContext(match[1] + capture, context, { filename: "index.html" });
   const file = path.resolve(args.file);
   const libDirs = existingDirs([...args.libs, ...defaultLibDirs]);
+  const importCache = new Map();
+  const importResolver = request => {
+    const resolved = resolveScadPath(request, path.dirname(file), libDirs);
+    if (!resolved || path.extname(resolved).toLowerCase() !== ".stl") return null;
+    if (!importCache.has(resolved)) importCache.set(resolved, parseStlMesh(resolved));
+    return importCache.get(resolved);
+  };
+  context.ShapeForgeImportResolver = importResolver;
+  context.window.ShapeForgeImportResolver = importResolver;
   const source = preprocessScad(fs.readFileSync(file, "utf8"), file, libDirs);
   context.__shapeForge.loadSource(path.basename(file), source);
   const status = context.__shapeForge.getStatus();

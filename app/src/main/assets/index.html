@@ -867,6 +867,43 @@ bolt_line(9);`
     return Object.assign(Object.create(env), {});
   }
 
+  function isMatrix(v) {
+    return Array.isArray(v) && v.length > 0 && v.every(row => Array.isArray(row));
+  }
+
+  function scaleArray(v, scalar) {
+    return v.map(x => Array.isArray(x) ? scaleArray(x, scalar) : num(x) * scalar);
+  }
+
+  function addArray(a, b, op) {
+    return a.map((v, i) => Array.isArray(v) ? addArray(v, Array.isArray(b) ? b[i] || [] : b, op) : op(num(v), num(Array.isArray(b) ? b[i] : b)));
+  }
+
+  function multiplyMatrix(a, b) {
+    const rows = a.length;
+    const cols = Math.max(...b.map(row => row.length));
+    const shared = Math.max(...a.map(row => row.length));
+    const out = [];
+    for (let r = 0; r < rows; r++) {
+      const row = [];
+      for (let c = 0; c < cols; c++) {
+        let value = 0;
+        for (let k = 0; k < shared; k++) value += num(a[r] && a[r][k]) * num(b[k] && b[k][c]);
+        row.push(value);
+      }
+      out.push(row);
+    }
+    return out;
+  }
+
+  function multiplyValues(a, b) {
+    if (isMatrix(a) && isMatrix(b)) return multiplyMatrix(a, b);
+    if (Array.isArray(a) && !Array.isArray(b)) return scaleArray(a, num(b));
+    if (!Array.isArray(a) && Array.isArray(b)) return scaleArray(b, num(a));
+    if (Array.isArray(a) && Array.isArray(b)) return a.map((v, i) => num(v) * num(b[i]));
+    return num(a) * num(b);
+  }
+
   function evalExpr(expr, env) {
     if (!expr) return 0;
     if (expr.type === "num" || expr.type === "str") return expr.value;
@@ -904,9 +941,9 @@ bolt_line(9);`
     if (expr.type === "binary") {
       const a = evalExpr(expr.left, env);
       const b = evalExpr(expr.right, env);
-      if (expr.op === "+") return Array.isArray(a) ? a.map((v, i) => num(v) + num(Array.isArray(b) ? b[i] : b)) : num(a) + num(b);
-      if (expr.op === "-") return Array.isArray(a) ? a.map((v, i) => num(v) - num(Array.isArray(b) ? b[i] : b)) : num(a) - num(b);
-      if (expr.op === "*") return Array.isArray(a) ? a.map(v => num(v) * num(b)) : num(a) * num(b);
+      if (expr.op === "+") return Array.isArray(a) ? addArray(a, b, (x, y) => x + y) : num(a) + num(b);
+      if (expr.op === "-") return Array.isArray(a) ? addArray(a, b, (x, y) => x - y) : num(a) - num(b);
+      if (expr.op === "*") return multiplyValues(a, b);
       if (expr.op === "/") return Array.isArray(a) ? a.map(v => num(v) / num(b)) : num(a) / num(b);
       if (expr.op === "%") return num(a) % num(b);
       if (expr.op === "==") return JSON.stringify(a) === JSON.stringify(b);
@@ -974,6 +1011,15 @@ bolt_line(9);`
         is_list: v => Array.isArray(v),
         str: (...v) => v.map(x => Array.isArray(x) ? `[${x.join(", ")}]` : String(x)).join(""),
         lookup: (key, table) => lookupValue(num(key), table),
+        rands: (min, max, count, seed = 1) => {
+          let state = Math.trunc(num(seed, 1)) || 1;
+          const out = [];
+          for (let i = 0; i < Math.max(0, Math.trunc(num(count))); i++) {
+            state = (1103515245 * state + 12345) >>> 0;
+            out.push(num(min) + (state / 0x100000000) * (num(max) - num(min)));
+          }
+          return out;
+        },
         version: () => [2021, 1, 0]
       };
       if (table[expr.name]) return table[expr.name](...args);
@@ -1048,6 +1094,16 @@ bolt_line(9);`
     const m = matIdentity();
     m[0] = v[0]; m[5] = v[1]; m[10] = v[2];
     return m;
+  }
+
+  function matFromScadMatrix(value) {
+    const base = matIdentity();
+    if (!Array.isArray(value)) return base;
+    for (let row = 0; row < Math.min(4, value.length); row++) {
+      const src = Array.isArray(value[row]) ? value[row] : [];
+      for (let col = 0; col < Math.min(4, src.length); col++) base[col + row * 4] = num(src[col], base[col + row * 4]);
+    }
+    return base;
   }
 
   function matRotate(deg) {
@@ -1187,6 +1243,10 @@ bolt_line(9);`
 
   function manifoldModule() {
     return window.ShapeForgeManifold || globalThis.ShapeForgeManifold || null;
+  }
+
+  function importResolver() {
+    return window.ShapeForgeImportResolver || globalThis.ShapeForgeImportResolver || null;
   }
 
   function meshToManifold(source) {
@@ -1459,6 +1519,17 @@ bolt_line(9);`
         const points = get("points", 0, []);
         return Array.isArray(points) ? [transformShape2(shape2(points, color), matrix)] : [];
       }
+      case "projection": {
+        const module = manifoldModule();
+        if (!module) throw new Error(window.ShapeForgeManifoldError || "Boolean engine is loading");
+        const solid = meshListToManifold(evalNodes(node.children, cloneEnv(env), modules, matIdentity(), color));
+        if (!solid) return [];
+        const section = get("cut", -1, false) ? solid.slice(0) : solid.project();
+        const out = crossSectionToShapes(section, color).map(s => transformShape2(s, matrix));
+        if (section.delete) section.delete();
+        if (solid.delete) solid.delete();
+        return out;
+      }
       case "offset": {
         const module = manifoldModule();
         if (!module) throw new Error(window.ShapeForgeManifoldError || "Boolean engine is loading");
@@ -1486,8 +1557,12 @@ bolt_line(9);`
       }
       case "translate":
         return childShapes(matMul(matrix, matTranslate(vec(get("v", 0, [0,0,0]), 3, [0,0,0]))));
-      case "rotate":
-        return childShapes(matMul(matrix, matRotate(vec(get("a", 0, [0,0,0]), 3, [0,0,0]))));
+      case "rotate": {
+        const a = get("a", 0, [0,0,0]);
+        return childShapes(matMul(matrix, matRotate(Array.isArray(a) ? vec(a, 3, [0,0,0]) : a)));
+      }
+      case "multmatrix":
+        return childShapes(matMul(matrix, matFromScadMatrix(get("m", 0, matIdentity()))));
       case "scale":
         return childShapes(matMul(matrix, matScale(vec(get("v", 0, [1,1,1]), 3, [1,1,1]))));
       case "mirror": {
@@ -1617,6 +1692,20 @@ bolt_line(9);`
         }
         return [applyMatrixToMesh(mesh(tris, color), matrix)];
       }
+      case "import": {
+        const resolver = importResolver();
+        const request = get("file", 0, "");
+        if (!resolver || !request) {
+          notices.push(tr("unsupportedCall", "import"));
+          return [];
+        }
+        const imported = resolver(String(request));
+        if (!imported || !Array.isArray(imported.tris)) {
+          notices.push(tr("unsupportedCall", "import"));
+          return [];
+        }
+        return [applyMatrixToMesh(mesh(imported.tris, color), matrix)];
+      }
       case "linear_extrude": {
         const height = num(get("height", 0, 1), 1);
         const center = !!get("center", -1, false);
@@ -1664,6 +1753,8 @@ bolt_line(9);`
         const rot = Array.isArray(a) ? matRotate(vec(a, 3, [0,0,0])) : axis !== undefined ? matRotateAxis(a, axis) : matRotate(a);
         return childMeshes(matMul(matrix, rot));
       }
+      case "multmatrix":
+        return childMeshes(matMul(matrix, matFromScadMatrix(get("m", 0, matIdentity()))));
       case "scale":
         return childMeshes(matMul(matrix, matScale(vec(get("v", 0, [1,1,1]), 3, [1,1,1]))));
       case "mirror": {
