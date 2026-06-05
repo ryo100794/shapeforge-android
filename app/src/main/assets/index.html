@@ -554,7 +554,7 @@ bolt_line(9);`
   function tokenize(input) {
     const source = stripComments(input);
     const tokens = [];
-    const re = /\s+|(<[^>\n]+>)|([A-Za-z_$][A-Za-z0-9_$]*)|((?:\d+\.\d+|\d+|\.\d+)(?:[eE][+-]?\d+)?)|("(?:\\.|[^"])*")|(==|!=|<=|>=|&&|\|\|)|([{}\[\](),;=+\-*\/%<>!?:#\.])/gy;
+    const re = /\s+|(<[^>\n]+>)|([A-Za-z_$][A-Za-z0-9_$]*|\d+(?![eE][+-]?\d)[A-Za-z_$][A-Za-z0-9_$]*)|((?:\d+\.\d+|\d+|\.\d+)(?:[eE][+-]?\d+)?)|("(?:\\.|[^"])*")|(==|!=|<=|>=|&&|\|\|)|([{}\[\](),;=+\-*\/%<>!?:#\.])/gy;
     let pos = 0;
     while (pos < source.length) {
       re.lastIndex = pos;
@@ -1011,6 +1011,24 @@ bolt_line(9);`
         is_list: v => Array.isArray(v),
         str: (...v) => v.map(x => Array.isArray(x) ? `[${x.join(", ")}]` : String(x)).join(""),
         lookup: (key, table) => lookupValue(num(key), table),
+        search: (value, table, numReturns = 0, indexCol = undefined) => {
+          const values = typeof value === "string" ? value.split("") : Array.isArray(value) ? value : [value];
+          const out = [];
+          const col = indexCol === undefined ? undefined : Math.trunc(num(indexCol));
+          for (const needle of values) {
+            const hits = [];
+            if (Array.isArray(table)) {
+              table.forEach((candidate, index) => {
+                const target = col === undefined || !Array.isArray(candidate) ? candidate : candidate[col];
+                const fields = Array.isArray(candidate) ? candidate : [candidate];
+                if (String(target) === String(needle) || fields.some(field => String(field) === String(needle))) hits.push(index);
+              });
+            }
+            const limit = Math.trunc(num(numReturns));
+            out.push(...(limit > 0 ? hits.slice(0, limit) : hits));
+          }
+          return out;
+        },
         rands: (min, max, count, seed = 1) => {
           let state = Math.trunc(num(seed, 1)) || 1;
           const out = [];
@@ -1120,7 +1138,8 @@ bolt_line(9);`
 
   function matRotateAxis(deg, axis) {
     const v = vec(axis, 3, [0, 0, 1]);
-    const len = Math.hypot(v[0], v[1], v[2]) || 1;
+    const len = Math.hypot(v[0], v[1], v[2]);
+    if (len < 1e-12) return matIdentity();
     const x = v[0] / len, y = v[1] / len, z = v[2] / len;
     const a = num(deg) * Math.PI / 180;
     const c = Math.cos(a), s = Math.sin(a), t = 1 - c;
@@ -1433,6 +1452,13 @@ bolt_line(9);`
     }
   }
 
+  function collectAssignments(nodes, env) {
+    for (const node of nodes || []) {
+      if (!node || node.type !== "assign") continue;
+      env[node.name] = evalExpr(node.expr, env);
+    }
+  }
+
   function moduleCallEnv(env, mod, args, node) {
     const local = cloneEnv(env);
     mod.params.forEach((p, i) => {
@@ -1459,6 +1485,7 @@ bolt_line(9);`
 
   function eval2DNodes(nodes, env, modules, matrix, color) {
     collectDefinitions(nodes, env, modules);
+    collectAssignments(nodes, env);
     let out = [];
     for (const node of nodes) {
       if (!node) continue;
@@ -1517,7 +1544,15 @@ bolt_line(9);`
       }
       case "polygon": {
         const points = get("points", 0, []);
-        return Array.isArray(points) ? [transformShape2(shape2(points, color), matrix)] : [];
+        const paths = get("paths", 1, undefined);
+        if (!Array.isArray(points)) return [];
+        if (Array.isArray(paths) && paths.length) {
+          return paths
+            .map(path => Array.isArray(path) ? path.map(i => points[Math.trunc(num(i))]).filter(Boolean) : [])
+            .filter(path => path.length >= 3)
+            .map(path => transformShape2(shape2(path, color), matrix));
+        }
+        return [transformShape2(shape2(points, color), matrix)];
       }
       case "projection": {
         const module = manifoldModule();
@@ -1599,6 +1634,7 @@ bolt_line(9);`
 
   function evalNodes(nodes, env, modules, matrix, color) {
     collectDefinitions(nodes, env, modules);
+    collectAssignments(nodes, env);
     let out = [];
     for (const node of nodes) {
       if (!node) continue;
